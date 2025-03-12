@@ -35,7 +35,7 @@
                             href="{{ route('login') }}"
                             class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
                         >
-                            Log in
+                            Log in Naval
                         </a>
 
                         @if (Route::has('register'))
@@ -64,7 +64,7 @@
                             <span>
                                 Read the
                                 <a href="https://laravel.com/docs" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
-                                    <span>Documentation</span>
+                                    <span>Documentation 1</span>
                                     <svg
                                         width="10"
                                         height="11"

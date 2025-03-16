@@ -40,7 +40,7 @@ class AuthController extends Controller
                 return redirect()->route('dashboard'); // Redirect to the dashboard
             }
 
-            return redirect()->intended('/home'); // Redirect for non-superadmin users
+            return redirect()->intended('/dashboard'); // Redirect for non-superadmin users
         }
 
         // If authentication fails, return with an error message

@@ -15,8 +15,8 @@
                     {{ $errors->first() }}
                 </div>
             @endif
-            <!-- Login Form -->
-            <form method="POST" action="{{ route('login') }}">
+            <!-- Login Formddd -->
+            <form method="POST" action="{{ route('logins') }}">
                 @csrf
                 <div class="form-group">
                     <label for="username">Username</label>

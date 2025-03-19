@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Customer extends Model
+{
+    use HasFactory;
+
+    protected $table = 'customers'; // Ensure the correct table name
+    protected $fillable = [
+        'full_name', 'email', 'country_code', 'contact_no', 'address',
+        'pincode', 'is_active', 'is_delete', 'service_name', 'number_of_users',
+        'message', 'comment', 'description', 'customer_description', 'lead_id',
+        'campaign_id', 'form_id', 'source', 'status', 'convertedlead'
+    ];
+}
+

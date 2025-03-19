@@ -32,6 +32,9 @@ class AuthController extends Controller
         if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             $user = Auth::user();
 
+            // Store username in session
+            session(['username' => $user->username]);
+
             // Check if the logged-in user is a superadmin
             if ($user->role === 'superadmin') {
                 return redirect()->route('dashboard'); // Redirect to the dashboard

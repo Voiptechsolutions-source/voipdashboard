@@ -51,6 +51,13 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         // Check for Authorization header
+        header('Access-Control-Allow-Origin: https://voip.voiptechsolutions.com');
+        header('Access-Control-Allow-Methods: POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept');
+        if ($request->isMethod('options')) {
+            return response()->json([], 200);
+        }
+
         $authHeader = $request->header('Authorization');
 
         // Extract and decode Base64 token

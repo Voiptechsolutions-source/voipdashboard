@@ -47,6 +47,71 @@ class CustomerController extends Controller
         return response()->json($customer);
     }
 
+    // API to store customer leads
+    public function store(Request $request)
+    {
+        // Check for Authorization header
+        $authHeader = $request->header('Authorization');
+
+        // Extract and decode Base64 token
+        if ($authHeader && str_starts_with($authHeader, 'Basic ')) {
+            $base64Token = substr($authHeader, 6);
+            $decodedToken = trim(base64_decode($base64Token));
+            $validToken = trim(base64_decode('dm9pcHRlY2hjcm0=')); // Expected: "voiptechcrm"
+
+            if (strcmp($decodedToken, $validToken) !== 0) {
+                return response()->json([
+                    'error' => 'Invalid Token',
+                    'received_token' => $decodedToken,
+                    'expected_token' => $validToken,
+                    'length_received' => strlen($decodedToken),
+                    'length_expected' => strlen($validToken),
+                ], 401);
+            }
+        } else {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Validate input fields
+        // $validator = Validator::make($request->all(), [
+        //     'full_name' => 'required|string|max:500',
+        //     'country_code' => 'required|string|max:10',
+        //     'contact_no' => 'required|string|max:12|regex:/^\d+$/',
+        //     'email' => 'required|email|max:255',
+        //     'number_of_users' => 'required|string',
+        //     'services' => 'required|string',
+        //     'message' => 'nullable|string',
+        // ]);
+
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'error' => 'Validation Error',
+        //         'messages' => $validator->errors()
+        //     ], 400);
+        // }
+
+        try {
+            // Save customer data
+            $customer = new Customer();
+            $customer->full_name = $request->full_name;
+            $customer->country_code = $request->country_code;
+            $customer->contact_no = $request->contact_no;
+            $customer->email = $request->email;
+            $customer->number_of_users = $request->number_of_users;
+            $customer->service_name = $request->services;
+            $customer->message = $request->message;
+            $customer->raw_data = json_encode($request->all()); // ✅ Save all form data
+            $customer->save();
+
+            return response()->json(['success' => 'Customer lead saved successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Database Error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+
+
+
 
 
 }

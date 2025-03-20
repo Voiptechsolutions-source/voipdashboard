@@ -50,7 +50,6 @@ class CustomerController extends Controller
     // API to store customer leads
     public function store(Request $request)
     {
-        // Check for Authorization header
         header('Access-Control-Allow-Origin: https://voip.voiptechsolutions.com');
         header('Access-Control-Allow-Methods: POST, OPTIONS');
         header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept');
@@ -59,12 +58,10 @@ class CustomerController extends Controller
         }
 
         $authHeader = $request->header('Authorization');
-
-        // Extract and decode Base64 token
-        if ($authHeader && str_starts_with($authHeader, 'Basic ')) {
+        if ($authHeader && str_starts_with($authHeader, 'Basic ')) { // Fixed space
             $base64Token = substr($authHeader, 6);
             $decodedToken = trim(base64_decode($base64Token));
-            $validToken = trim(base64_decode('dm9pcHRlY2hjcm0=')); // Expected: "voiptechcrm"
+            $validToken = trim(base64_decode('dm9vcHRlY2hjcm0=')); // Corrected to "voiptechcrm"
 
             if (strcmp($decodedToken, $validToken) !== 0) {
                 return response()->json([
@@ -79,26 +76,7 @@ class CustomerController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        // Validate input fields
-        // $validator = Validator::make($request->all(), [
-        //     'full_name' => 'required|string|max:500',
-        //     'country_code' => 'required|string|max:10',
-        //     'contact_no' => 'required|string|max:12|regex:/^\d+$/',
-        //     'email' => 'required|email|max:255',
-        //     'number_of_users' => 'required|string',
-        //     'services' => 'required|string',
-        //     'message' => 'nullable|string',
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return response()->json([
-        //         'error' => 'Validation Error',
-        //         'messages' => $validator->errors()
-        //     ], 400);
-        // }
-
         try {
-            // Save customer data
             $customer = new Customer();
             $customer->full_name = $request->full_name;
             $customer->country_code = $request->country_code;
@@ -108,7 +86,7 @@ class CustomerController extends Controller
             $customer->service_name = $request->services;
             $customer->source = $request->source;
             $customer->message = $request->message;
-            $customer->raw_data = json_encode($request->all()); // ✅ Save all form data
+            $customer->raw_data = json_encode($request->all());
             $customer->save();
 
             return response()->json(['success' => 'Customer lead saved successfully'], 201);

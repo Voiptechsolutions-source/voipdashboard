@@ -48,133 +48,75 @@ class CustomerController extends Controller
     }
 
     // API to store customer leads
-    // public function store(Request $request)
-    // {
-    //     // Check for Authorization header
-    //     header('Access-Control-Allow-Origin: https://voip.voiptechsolutions.com');
-    //     header('Access-Control-Allow-Methods: POST, OPTIONS');
-    //     header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept');
-    //     if ($request->isMethod('options')) {
-    //         return response()->json([], 200);
-    //     }
-
-    //     $authHeader = $request->header('Authorization');
-
-    //     // Extract and decode Base64 token
-    //     if ($authHeader && str_starts_with($authHeader, 'Basic ')) {
-    //         $base64Token = substr($authHeader, 6);
-    //         $decodedToken = trim(base64_decode($base64Token));
-    //         $validToken = trim(base64_decode('dm9pcHRlY2hjcm0=')); // Expected: "voiptechcrm"
-
-    //         if (strcmp($decodedToken, $validToken) !== 0) {
-    //             return response()->json([
-    //                 'error' => 'Invalid Token',
-    //                 'received_token' => $decodedToken,
-    //                 'expected_token' => $validToken,
-    //                 'length_received' => strlen($decodedToken),
-    //                 'length_expected' => strlen($validToken),
-    //             ], 401);
-    //         }
-    //     } else {
-    //         return response()->json(['error' => 'Unauthorized'], 401);
-    //     }
-
-    //     // Validate input fields
-    //     // $validator = Validator::make($request->all(), [
-    //     //     'full_name' => 'required|string|max:500',
-    //     //     'country_code' => 'required|string|max:10',
-    //     //     'contact_no' => 'required|string|max:12|regex:/^\d+$/',
-    //     //     'email' => 'required|email|max:255',
-    //     //     'number_of_users' => 'required|string',
-    //     //     'services' => 'required|string',
-    //     //     'message' => 'nullable|string',
-    //     // ]);
-
-    //     // if ($validator->fails()) {
-    //     //     return response()->json([
-    //     //         'error' => 'Validation Error',
-    //     //         'messages' => $validator->errors()
-    //     //     ], 400);
-    //     // }
-
-    //     try {
-    //         // Save customer data
-    //         $customer = new Customer();
-    //         $customer->full_name = $request->full_name;
-    //         $customer->country_code = $request->country_code;
-    //         $customer->contact_no = $request->contact_no;
-    //         $customer->email = $request->email;
-    //         $customer->number_of_users = $request->number_of_users;
-    //         $customer->service_name = $request->services;
-    //         $customer->source = $request->source;
-    //         $customer->message = $request->message;
-    //         $customer->raw_data = json_encode($request->all()); // ✅ Save all form data
-    //         $customer->save();
-
-    //         return response()->json(['success' => 'Customer lead saved successfully'], 201);
-    //     } catch (\Exception $e) {
-    //         return response()->json(['error' => 'Database Error', 'message' => $e->getMessage()], 500);
-    //     }
-    // }
     public function store(Request $request)
     {
-        $callback = $request->query('callback', 'callback');
+        // Check for Authorization header
+        header('Access-Control-Allow-Origin: https://voip.voiptechsolutions.com');
+        header('Access-Control-Allow-Methods: POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept');
+        if ($request->isMethod('options')) {
+            return response()->json([], 200);
+        }
 
-        // Check Authorization header or query parameter
         $authHeader = $request->header('Authorization');
-        $authQuery = $request->query('auth');
-        $validToken = trim(base64_decode('dm9vcHRlY2hjcm0=')); // "voiptechcrm"
 
+        // Extract and decode Base64 token
         if ($authHeader && str_starts_with($authHeader, 'Basic ')) {
             $base64Token = substr($authHeader, 6);
             $decodedToken = trim(base64_decode($base64Token));
-        } elseif ($authQuery) {
-            $decodedToken = trim(base64_decode($authQuery));
-        } else {
-            $response = ['error' => 'Unauthorized'];
-        }
+            $validToken = trim(base64_decode('dm9pcHRlY2hjcm0=')); // Expected: "voiptechcrm"
 
-        if (!isset($response['error']) && strcmp($decodedToken, $validToken) !== 0) {
-            $response = ['error' => 'Invalid Token'];
-        }
-
-        if (!isset($response['error'])) {
-            $validator = Validator::make($request->all(), [
-                'full_name' => 'required|string|max:500',
-                'country_code' => 'required|string|max:10',
-                'contact_no' => 'required|string|max:12|regex:/^\d+$/',
-                'email' => 'required|email|max:255',
-                'number_of_users' => 'required|string',
-                'services' => 'required|string',
-                'message' => 'nullable|string',
-            ]);
-
-            if ($validator->fails()) {
-                $response = ['error' => 'Validation Error', 'messages' => $validator->errors()->toArray()];
-            } else {
-                try {
-                    $customer = new Customer();
-                    $customer->full_name = $request->full_name;
-                    $customer->country_code = $request->country_code;
-                    $customer->contact_no = $request->contact_no;
-                    $customer->email = $request->email;
-                    $customer->number_of_users = $request->number_of_users;
-                    $customer->service_name = $request->services;
-                    $customer->message = $request->message;
-                    $customer->raw_data = json_encode($request->all());
-                    $customer->save();
-
-                    $response = ['success' => 'Customer lead saved successfully'];
-                } catch (\Exception $e) {
-                    $response = ['error' => 'Database Error', 'message' => $e->getMessage()];
-                }
+            if (strcmp($decodedToken, $validToken) !== 0) {
+                return response()->json([
+                    'error' => 'Invalid Token',
+                    'received_token' => $decodedToken,
+                    'expected_token' => $validToken,
+                    'length_received' => strlen($decodedToken),
+                    'length_expected' => strlen($validToken),
+                ], 401);
             }
+        } else {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $jsonResponse = json_encode($response);
-        return response("$callback($jsonResponse);", 200)
-            ->header('Content-Type', 'application/javascript');
+        // Validate input fields
+        // $validator = Validator::make($request->all(), [
+        //     'full_name' => 'required|string|max:500',
+        //     'country_code' => 'required|string|max:10',
+        //     'contact_no' => 'required|string|max:12|regex:/^\d+$/',
+        //     'email' => 'required|email|max:255',
+        //     'number_of_users' => 'required|string',
+        //     'services' => 'required|string',
+        //     'message' => 'nullable|string',
+        // ]);
+
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'error' => 'Validation Error',
+        //         'messages' => $validator->errors()
+        //     ], 400);
+        // }
+
+        try {
+            // Save customer data
+            $customer = new Customer();
+            $customer->full_name = $request->full_name;
+            $customer->country_code = $request->country_code;
+            $customer->contact_no = $request->contact_no;
+            $customer->email = $request->email;
+            $customer->number_of_users = $request->number_of_users;
+            $customer->service_name = $request->services;
+            $customer->source = $request->source;
+            $customer->message = $request->message;
+            $customer->raw_data = json_encode($request->all()); // ✅ Save all form data
+            $customer->save();
+
+            return response()->json(['success' => 'Customer lead saved successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Database Error', 'message' => $e->getMessage()], 500);
+        }
     }
+    
 
 
 

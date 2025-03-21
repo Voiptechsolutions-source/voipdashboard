@@ -48,17 +48,14 @@ class CustomerController extends Controller
     }
 
     // API to store customer leads
-    public function store(Request $request)
+    public function savecustomerlead(Request $request)
     {
-        header('Access-Control-Allow-Origin: https://voip.voiptechsolutions.com');
-        header('Access-Control-Allow-Methods: POST, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept');
         if ($request->isMethod('options')) {
             return response()->json([], 200);
         }
 
         $authHeader = $request->header('Authorization');
-        if ($authHeader && str_starts_with($authHeader, 'Basic ')) { // Fixed space
+        if ($authHeader && str_starts_with($authHeader, 'Basic ')) {
             $base64Token = substr($authHeader, 6);
             $decodedToken = trim(base64_decode($base64Token));
             $validToken = trim(base64_decode('dm9vcHRlY2hjcm0=')); // Corrected to "voiptechcrm"
@@ -94,7 +91,6 @@ class CustomerController extends Controller
             return response()->json(['error' => 'Database Error', 'message' => $e->getMessage()], 500);
         }
     }
-    
 
 
 

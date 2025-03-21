@@ -8,7 +8,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/leadsubmit', [CustomerController::class, 'store']);
+Route::post('/savelead', [CustomerController::class, 'savecustomerlead']);
 Route::get('/test', function () {
     return response()->json(['message' => 'API is working!'], 200);
 });

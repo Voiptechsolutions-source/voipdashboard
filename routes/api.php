@@ -2,13 +2,16 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Customer\CustomerApiController; // Updated namespace
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/savelead', [CustomerController::class, 'savecustomerlead']);
+Route::post('/savelead', [CustomerApiController::class, 'savecustomerlead']);
 Route::get('/test', function () {
     return response()->json(['message' => 'API is working!'], 200);
 });
+
+
+

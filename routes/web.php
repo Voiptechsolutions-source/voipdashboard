@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Customer\CustomerController;
 
 
 // Show login form at the root URL
@@ -19,14 +19,11 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 // Handle logout
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-//customer 
 
+// Customer routes
 Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+
 Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('customers.show');
-//Route::get('/customers/{id}', [CustomerController::class, 'show']);
-
-
-
 
 
 

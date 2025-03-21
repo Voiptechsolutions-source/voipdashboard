@@ -23,18 +23,24 @@ class CustomerController extends Controller
                     $statusText = ($row->status == 2) ? "New Lead" :
                                   (($row->status == 0) ? "Pending" : "Complete");
 
-                    return '<button class="btn ' . $statusClass . ' btn-sm">' . $statusText . '</button>';
+                    return '<button class="btn ' . $statusClass . ' btn-sm update-status" data-id="' . $row->id . '">' . $statusText . '</button>';
                 })
-                ->addColumn('action', function ($row) {
+                ->addColumn('ConvertLead', function ($row) {
                     $convertedClass = ($row->convertedlead == 1) ? "btn-secondary disabled" : "btn-success";
                     $convertedText = ($row->convertedlead == 1) ? "Already Converted" : "Convert Lead";
 
                     return '<button class="btn ' . $convertedClass . ' btn-sm convert-lead" data-id="' . $row->id . '">' . $convertedText . '</button>';
                 })
                 ->addColumn('view', function ($row) {
-                    return '<button class="btn btn-info btn-sm view-details" data-id="' . $row->id . '">View Full Detail</button>';
+                    return '<button class="btn btn-info btn-sm view-details" data-id="' . $row->id . '">View</button>';
                 })
-                ->rawColumns(['status', 'action', 'view']) // ✅ Ensures buttons display correctly
+                ->addColumn('Edit', function ($row) {
+                    return '<button class="btn btn-info btn-sm view-details" data-id="' . $row->id . '">Edit</button>';
+                })
+                ->addColumn('Delete', function ($row) {
+                    return '<button class="btn btn-danger btn-sm delete-row" data-id="' . $row->id . '">Delete</button>';
+                })
+                ->rawColumns(['status', 'ConvertLead', 'view','Edit','Delete']) // ✅ Ensures buttons display correctly
                 ->toJson();
         }
 
@@ -46,6 +52,16 @@ class CustomerController extends Controller
     {
         $customer = Customer::findOrFail($id);
         return response()->json($customer);
+    }
+    //update status
+    public function updateStatus(Request $request)
+    {
+        $customer = Customer::findOrFail($request->id);
+        $customer->status = $request->status;
+        $customer->description = $request->description;
+        $customer->save();
+
+        return response()->json(['success' => true, 'message' => 'Status updated successfully!']);
     }
 
     // ✅ Update Customer Data
@@ -63,9 +79,15 @@ class CustomerController extends Controller
     }
 
     // ✅ Delete Customer
-    public function destroy(Customer $customer)
+    public function destroy($id)
     {
-        $customer->delete();
-        return response()->json(['success' => 'Customer deleted successfully.']);
+        $customer = Customer::find($id);
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+
+        $customer->delete(); // Delete customer
+        return response()->json(['message' => 'Customer deleted successfully']);
     }
+
 }

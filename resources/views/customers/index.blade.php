@@ -61,39 +61,91 @@
                 <th>Contact No</th>
                 <th>Status</th>
                 <th>Source</th>
-                <th>Action</th>
-                <th>View Full Detail</th>  <!-- New Column -->
+                <th>Service</th>
+                <th>ConvertLead</th>
+                <th>View</th>  <!-- New Column -->
+                <th>Edit</th>  
+                <th>Delete</th>
             </tr>
         </thead>
     </table>
     <!-- Full Detail Modal -->
 <div class="modal fade" id="customerDetailModal" tabindex="-1" aria-labelledby="customerDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="customerDetailModalLabel">Customer Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Full Name:</strong> <span id="detailFullName"></span></p>
-                <p><strong>Email:</strong> <span id="detailEmail"></span></p>
-                <p><strong>Contact:</strong> <span id="detailContact"></span></p>
-                <p><strong>Address:</strong> <span id="detailAddress"></span></p>
-                <p><strong>Message:</strong> <span id="detailMessage"></span></p>
-                <p><strong>Description:</strong> <span id="detailDescription"></span></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="customerDetailModalLabel">Customer Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Full Name:</strong> <span id="detailFullName"></span></p>
+        <p><strong>Email:</strong> <span id="detailEmail"></span></p>
+        <p><strong>Contact No:</strong> <span id="detailContact"></span></p>
+        <p><strong>Address:</strong> <span id="detailAddress"></span></p>
+        <p><strong>Message:</strong> <span id="detailMessage"></span></p>
+        <p><strong>Description:</strong> <span id="detailDescription"></span></p>
+        <p><strong>Service Name:</strong> <span id="detailService"></span></p>
+        <p><strong>Number of Users:</strong> <span id="detailUsers"></span></p>
+        <p><strong>Comment:</strong> <span id="detailComment"></span></p>
+        <p><strong>Customer Description:</strong> <span id="detailCustomerDesc"></span></p>
+        <p><strong>Lead ID:</strong> <span id="detailLeadID"></span></p>
+        <p><strong>Campaign ID:</strong> <span id="detailCampaignID"></span></p>
+        <p><strong>Form ID:</strong> <span id="detailFormID"></span></p>
+        <p><strong>Source:</strong> <span id="detailSource"></span></p>
+        <p><strong>Status:</strong> <span id="detailStatus"></span></p>
+        <!-- <p><strong>Converted Lead:</strong> <span id="detailConvertedLead"></span></p> -->
+      </div>
     </div>
+  </div>
 </div>
 
+<!---- status Modal --->
+<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="statusModalLabel">Update Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="updateStatusForm">
+          <input type="hidden" id="rowId" name="id">
+          
+          <!-- Label to display the ID -->
+          <div class="mb-3">
+            <label for="data" class="form-label">Row ID</label>
+            <label id="data" class="form-control"></label>
+          </div>
+          
+          <!-- Description in read-only text area -->
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+          </div>
+
+          <!-- Dropdown to update the status -->
+          <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" name="status">
+              <option value="0">Pending</option>
+              <option value="1">Complete</option>
+              <option value="2">New Lead</option>
+            </select>
+          </div>
+          <input type="hidden" id="csrf-token" name="_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+      </div>
     </div>
-    </div>
-    </div>
-    </div>
-    </div>
+  </div>
+</div>
+<!---Ending status Modal--->
+
+</div>
+</div>
+</div>
+</div>
+</div>
     </section>
 </div>
 

@@ -193,6 +193,84 @@ $(document).ready(function() {
         }
     });
 
+    // edit customer lead
+
+    $(document).on('click', '.edit-lead', function() {
+    let rowId = $(this).data('id');
+
+    $.ajax({
+        url: '/customers/' + rowId + '/edit',
+        type: 'GET',
+        success: function(response) {
+            $('#editCustomerId').val(response.id);
+            $('#editFullName').val(response.full_name);
+            $('#editEmail').val(response.email);
+            $('#editCountryCode').val(response.country_code);
+            $('#editContactNo').val(response.contact_no);
+            $('#editAddress').val(response.address);
+            $('#editPincode').val(response.pincode);
+            $('#editServiceName').val(response.service_name);
+            $('#editNumberOfUsers').val(response.number_of_users);
+            $('#editMessage').val(response.message);
+            $('#editComment').val(response.comment);
+            $('#editStatus').val(response.status);
+            
+            $('#editCustomerModal').modal('show'); // Open modal
+        },
+        error: function(xhr) {
+            alert("Error fetching data!");
+        }
+    });
+});
+
+// Handle form submission
+$('#editCustomerForm').on('submit', function(e) {
+    e.preventDefault();
+    
+    let rowId = $('#editCustomerId').val();
+    
+    $.ajax({
+        url: '/customers/' + rowId,
+        type: 'PUT',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: $(this).serialize(),
+        success: function(response) {
+            alert(response.message);
+            $('#editCustomerModal').modal('hide');
+            location.reload();
+        },
+        error: function(xhr) {
+            alert("Update failed: " + (xhr.responseJSON.message || "Error"));
+        }
+    });
+});
+
+    // Handle form submission
+$('#editCustomerForm').on('submit', function(e) {
+    e.preventDefault();
+    
+    let rowId = $('#editCustomerId').val();
+    
+    $.ajax({
+        url: '/customers/' + rowId,
+        type: 'PUT',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: $(this).serialize(),
+        success: function(response) {
+            alert(response.message);
+            $('#editCustomerModal').modal('hide');
+            location.reload();
+        },
+        error: function(xhr) {
+            alert("Update failed: " + (xhr.responseJSON.message || "Error"));
+        }
+    });
+});
+
 });
 
 

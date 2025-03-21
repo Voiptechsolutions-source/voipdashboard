@@ -141,6 +141,82 @@
 </div>
 <!---Ending status Modal--->
 
+<!-- Edit Customer Modal -->
+<!-- Edit Customer Modal -->
+<div class="modal fade" id="editCustomerModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Customer</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editCustomerForm">
+                    <input type="hidden" id="editCustomerId" name="id">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" class="form-control" id="editFullName" name="full_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" class="form-control" id="editEmail" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Country Code</label>
+                                <input type="text" class="form-control" id="editCountryCode" name="country_code">
+                            </div>
+                            <div class="form-group">
+                                <label>Contact No</label>
+                                <input type="text" class="form-control" id="editContactNo" name="contact_no">
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea class="form-control" id="editAddress" name="address"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Pincode</label>
+                                <input type="text" class="form-control" id="editPincode" name="pincode">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Service Name</label>
+                                <input type="text" class="form-control" id="editServiceName" name="service_name">
+                            </div>
+                            <div class="form-group">
+                                <label>Number of Users</label>
+                                <input type="text" class="form-control" id="editNumberOfUsers" name="number_of_users">
+                            </div>
+                            <div class="form-group">
+                                <label>Message</label>
+                                <textarea class="form-control" id="editMessage" name="message"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select class="form-control" id="editStatus" name="status">
+                                    <option value="0">Pending</option>
+                                    <option value="1">Approved</option>
+                                    <option value="2">Rejected</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Comment</label>
+                                <textarea class="form-control" id="editComment" name="comment"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Update Customer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
 </div>
 </div>

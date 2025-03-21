@@ -35,7 +35,7 @@ class CustomerController extends Controller
                     return '<button class="btn btn-info btn-sm view-details" data-id="' . $row->id . '">View</button>';
                 })
                 ->addColumn('Edit', function ($row) {
-                    return '<button class="btn btn-info btn-sm view-details" data-id="' . $row->id . '">Edit</button>';
+                    return '<button class="btn btn-warning btn-sm edit-lead" data-id="' . $row->id . '" data-toggle="modal" data-target="#editLeadModal">Edit</button>';
                 })
                 ->addColumn('Delete', function ($row) {
                     return '<button class="btn btn-danger btn-sm delete-row" data-id="' . $row->id . '">Delete</button>';
@@ -64,18 +64,55 @@ class CustomerController extends Controller
         return response()->json(['success' => true, 'message' => 'Status updated successfully!']);
     }
 
+    // Fetch customer data for editing
+    public function edit($id)
+    {
+        $customer = Customer::find($id);
+        if ($customer) {
+            return response()->json($customer);
+        }
+        return response()->json(['message' => 'Customer not found!'], 404);
+    }
+
     // ✅ Update Customer Data
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:customers,email,' . $customer->id,
-            'contact_no' => 'nullable|string|max:15',
+            'email' => 'required|email|max:255',
+            'country_code' => 'nullable|string|max:10',
+            'contact_no' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'pincode' => 'nullable|string|max:10',
+            'service_name' => 'nullable|string|max:255',
+            'number_of_users' => 'nullable|string|max:10',
+            'message' => 'nullable|string',
+            'comment' => 'nullable|string',
+            'status' => 'required|in:0,1,2' // 0 = Pending, 1 = Approved, 2 = Rejected
         ]);
 
-        $customer->update($request->all());
+        $customer = Customer::find($id);
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
 
-        return response()->json(['success' => 'Customer updated successfully.']);
+        // Update fields
+        $customer->full_name = $request->full_name;
+        $customer->email = $request->email;
+        $customer->country_code = $request->country_code;
+        $customer->contact_no = $request->contact_no;
+        $customer->address = $request->address;
+        $customer->pincode = $request->pincode;
+        $customer->service_name = $request->service_name;
+        $customer->number_of_users = $request->number_of_users;
+        $customer->message = $request->message;
+        $customer->comment = $request->comment;
+        $customer->status = $request->status;
+        $customer->updated_at = now(); // Update timestamp
+
+        $customer->save(); // Save changes
+
+        return response()->json(['message' => 'Customer updated successfully']);
     }
 
     // ✅ Delete Customer

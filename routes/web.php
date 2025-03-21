@@ -30,6 +30,10 @@ Route::post('/update-status', [CustomerController::class, 'updateStatus'])->name
 
 Route::delete('/customers/{id}', [CustomerController::class, 'destroy']);
 
+Route::get('/customers/{id}/edit', [CustomerController::class, 'edit']);
+
+Route::put('/customers/{id}', [CustomerController::class, 'update']);
+
 //Lead contoller
 
 Route::post('/convert-lead', [LeadController::class, 'convertLead']);

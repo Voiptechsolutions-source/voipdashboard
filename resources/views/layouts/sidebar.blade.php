@@ -15,13 +15,13 @@
             <i class="bi bi-layout-text-window-reverse"></i><span>Customer Data</span>
         </a>
         
-        <a class="nav-link" href="customerdata.php">
+        <a class="nav-link" href="import-customers">
             <i class="bi bi-layout-text-window-reverse"></i><span>Import Customer Data</span>
         </a>
-        <a class="nav-link" href="customerdata.php">
+        <a class="nav-link" href="converted-leads">
             <i class="bi bi-layout-text-window-reverse"></i><span>Converted Lead</span>
         </a>
-        <a class="nav-link" href="customerdata.php">
+        <a class="nav-link" href="support">
             <i class="bi bi-layout-text-window-reverse"></i><span>Support</span>
         </a>
         <a class="nav-link" href="customerdata.php">

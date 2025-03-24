@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Customer; // ✅ Updated namespace
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Imports\CustomersImport;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class CustomerController extends Controller

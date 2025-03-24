@@ -271,6 +271,42 @@ $('#editCustomerForm').on('submit', function(e) {
     });
 });
 
+//Handle convert lead page
+
+// Open modal and fill data
+    $('.add-revenue-btn').click(function () {
+        
+        var leadId = $(this).data('lead-id');
+        var fullName = $(this).data('lead-name');
+        var email = $(this).data('lead-email');
+
+        $('#leadIdInput').val(leadId);
+        $('#leadFullName').val(fullName);
+        $('#leadEmail').val(email);
+    });
+
+    // Submit revenue form via AJAX
+    $('#addRevenueForm').submit(function (e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url:"/support/saverevenue", // Properly formatted route
+            type: "POST",
+            data: formData,
+            success: function (response) {
+                alert('Revenue added successfully!');
+                $('#addRevenueModal').modal('hide');
+                location.reload();
+            },
+            error: function (xhr) {
+                alert('Error adding revenue. Please try again.');
+            }
+        });
+    });
+
+    
+
 });
 
 

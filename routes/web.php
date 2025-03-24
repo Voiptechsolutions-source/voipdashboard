@@ -6,6 +6,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\LeadController;
+use App\Http\Controllers\Customer\CustomerImportController;
+use App\Http\Controllers\Customer\ConvertedLeadsController;
+use App\Http\Controllers\SupportController;
+
 
 
 // Show login form at the root URL
@@ -37,6 +41,22 @@ Route::put('/customers/{id}', [CustomerController::class, 'update']);
 //Lead contoller
 
 Route::post('/convert-lead', [LeadController::class, 'convertLead']);
+
+//Import customer
+
+
+Route::get('/import-customers', [CustomerImportController::class, 'showImportForm'])->name('import.customers.form');
+
+Route::post('/import-customers', [CustomerImportController::class, 'import'])->name('import.customers');
+
+//converted Leads
+Route::get('/converted-leads', [ConvertedLeadsController::class, 'index'])->name('converted.leads');
+
+//support page
+
+Route::get('/support', [SupportController::class, 'index'])->name('support.index');
+Route::post('/support/saverevenue', [SupportController::class, 'store'])->name('support.store');
+
 
 
 

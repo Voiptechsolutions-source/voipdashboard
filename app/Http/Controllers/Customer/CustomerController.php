@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Imports\CustomersImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
 {
@@ -87,6 +89,7 @@ class CustomerController extends Controller
             'address' => 'nullable|string',
             'pincode' => 'nullable|string|max:10',
             'service_name' => 'nullable|string|max:255',
+            'service_type' => 'nullable|string|max:255',
             'number_of_users' => 'nullable|string|max:10',
             'message' => 'nullable|string',
             'comment' => 'nullable|string',
@@ -106,6 +109,7 @@ class CustomerController extends Controller
         $customer->address = $request->address;
         $customer->pincode = $request->pincode;
         $customer->service_name = $request->service_name;
+        $customer->service_type = $request->service_type;
         $customer->number_of_users = $request->number_of_users;
         $customer->message = $request->message;
         $customer->comment = $request->comment;
@@ -118,15 +122,36 @@ class CustomerController extends Controller
     }
 
     // ✅ Delete Customer
-    public function destroy($id)
-    {
-        $customer = Customer::find($id);
-        if (!$customer) {
-            return response()->json(['message' => 'Customer not found'], 404);
+    public function destroy(Request $request, $id) {
+        // Ensure the user is logged in
+        //dd(Auth::check());
+        if (!Auth::guard('web')->check()) {
+            return response()->json(['message' => 'Unauthorized. Please log in again.'], 401);
         }
 
-        $customer->delete(); // Delete customer
+        $user = Auth::guard('web')->user(); // Get the logged-in admin user
+        $inputPassword = $request->input('password'); // Get password from request
+
+        if (!$inputPassword) {
+            return response()->json(['message' => 'Password is required.'], 400);
+        }
+
+        // Debugging logs
+        \Log::info('Entered Password: ' . $inputPassword);
+        \Log::info('Stored Hashed Password: ' . $user->password);
+
+        // Check if the entered password matches the stored hash
+        if (!Hash::check($inputPassword, $user->password)) {
+            return response()->json(['message' => 'Incorrect password'], 403);
+        }
+
+        // Find and delete the customer
+        $customer = Customer::findOrFail($id);
+        $customer->delete();
+
         return response()->json(['message' => 'Customer deleted successfully']);
     }
+
+
 
 }

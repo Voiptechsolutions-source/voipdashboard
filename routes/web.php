@@ -9,6 +9,7 @@ use App\Http\Controllers\Customer\LeadController;
 use App\Http\Controllers\Customer\CustomerImportController;
 use App\Http\Controllers\Customer\ConvertedLeadsController;
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\Admin\DeleteController;
 
 
 
@@ -32,7 +33,9 @@ Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('custom
 
 Route::post('/update-status', [CustomerController::class, 'updateStatus'])->name('customers.updateStatus');
 
-Route::delete('/customers/{id}', [CustomerController::class, 'destroy']);
+Route::middleware(['auth:web'])->group(function () {
+    Route::delete('/customers/{id}', [CustomerController::class, 'destroy']);
+});
 
 Route::get('/customers/{id}/edit', [CustomerController::class, 'edit']);
 
@@ -56,6 +59,8 @@ Route::get('/converted-leads', [ConvertedLeadsController::class, 'index'])->name
 
 Route::get('/support', [SupportController::class, 'index'])->name('support.index');
 Route::post('/support/saverevenue', [SupportController::class, 'store'])->name('support.store');
+
+
 
 
 

@@ -46,6 +46,7 @@ class CustomerApiController extends Controller
             $customer->email = $request->email;
             $customer->number_of_users = $request->number_of_users;
             $customer->service_name = $request->services;
+            $customer->service_type = $request->service_type;
             $customer->source = $request->source;
             $customer->message = $request->message;
             $customer->raw_data = json_encode($request->all());

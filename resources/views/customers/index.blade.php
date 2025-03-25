@@ -62,6 +62,7 @@
                 <th>Status</th>
                 <th>Source</th>
                 <th>Service</th>
+                <th>Service Type</th>
                 <th>ConvertLead</th>
                 <th>View</th>  <!-- New Column -->
                 <th>Edit</th>  
@@ -85,6 +86,7 @@
         <p><strong>Message:</strong> <span id="detailMessage"></span></p>
         <p><strong>Description:</strong> <span id="detailDescription"></span></p>
         <p><strong>Service Name:</strong> <span id="detailService"></span></p>
+        <p><strong>Service Type:</strong> <span id="detailServicetype"></span></p>
         <p><strong>Number of Users:</strong> <span id="detailUsers"></span></p>
         <p><strong>Comment:</strong> <span id="detailComment"></span></p>
         <p><strong>Customer Description:</strong> <span id="detailCustomerDesc"></span></p>
@@ -186,6 +188,10 @@
                             <div class="form-group">
                                 <label>Service Name</label>
                                 <input type="text" class="form-control" id="editServiceName" name="service_name">
+                            </div>
+                            <div class="form-group">
+                                <label>Service Type</label>
+                                <input type="text" class="form-control" id="editServiceType" name="service_type">
                             </div>
                             <div class="form-group">
                                 <label>Number of Users</label>

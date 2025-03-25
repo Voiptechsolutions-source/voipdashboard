@@ -13,6 +13,7 @@ $(document).ready(function() {
         { data: 'status', name: 'status' },
         { data: 'source', name: 'source' },
         { data: 'service_name', name: 'service_name' },
+        { data: 'service_type', name: 'service_type' },
         { data: 'ConvertLead', name: 'action', orderable: false, searchable: false},
         { data: 'view', name: 'view', orderable: false, searchable: false},
         { data: 'Edit', name: 'view', orderable: false, searchable: false},
@@ -81,6 +82,7 @@ $(document).ready(function() {
                 $('#detailMessage').text(data.message ? data.message : 'No data available');
                 $('#detailDescription').text(data.description ? data.description : 'No data available');
                 $('#detailService').text(data.service_name ? data.service_name : 'No data available');
+                $('#detailServicetype').text(data.service_type ? data.service_type : 'No data available');
                 $('#detailUsers').text(data.number_of_users ? data.number_of_users : 'No data available');
                 $('#detailComment').text(data.comment ? data.comment : 'No data available');
                 $('#detailCustomerDesc').text(data.customer_description ? data.customer_description : 'No data available');
@@ -148,20 +150,27 @@ $(document).ready(function() {
 
     //Delete Row
     $(document).on('click', '.delete-row', function() {
-        let rowId = $(this).data('id');  // Get the row ID
-        let row = $(this).closest('tr'); // Select the row to remove
-        //let csrfToken = $('#csrf-token').val(); // Fetch CSRF token from modal
+        let rowId = $(this).data('id');
+        let row = $(this).closest('tr');
+        let inputPassword = prompt("Enter your admin password to confirm:");
+
+        if (!inputPassword) {
+            alert("Password is required!");
+            return;
+        }
 
         if (confirm("Are you sure you want to delete this entry?")) {
             $.ajax({
-                url: '/customers/' + rowId, // Adjust this route based on your Laravel routes
+                url: '/customers/' + rowId,
                 type: 'DELETE',
+                xhrFields: { withCredentials: true },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+                data: { password: inputPassword }, // Sending password to backend
                 success: function(response) {
-                    alert(response.message); // Show success message
-                    $('#customerTable').DataTable().row(row).remove().draw(); // Remove row from DataTable
+                    alert(response.message);
+                    $('#customerTable').DataTable().row(row).remove().draw();
                 },
                 error: function(xhr) {
                     alert("Error: " + xhr.responseJSON.message);
@@ -169,6 +178,8 @@ $(document).ready(function() {
             });
         }
     });
+
+
 
     //Convert Lead
     $(document).on('click', '.convert-lead', function() {
@@ -210,6 +221,7 @@ $(document).ready(function() {
             $('#editAddress').val(response.address);
             $('#editPincode').val(response.pincode);
             $('#editServiceName').val(response.service_name);
+            $('#editServiceType').val(response.service_type);
             $('#editNumberOfUsers').val(response.number_of_users);
             $('#editMessage').val(response.message);
             $('#editComment').val(response.comment);

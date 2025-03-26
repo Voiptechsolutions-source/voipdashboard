@@ -22,6 +22,10 @@ Route::post('/login', [AuthController::class, 'login'])->name('logins');
 // Dashboard route, protected by auth middleware
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
+Route::get('/dashboard/filter', [DashboardController::class, 'filter']);
+
+Route::get('/dashboard/chart-data', [DashboardController::class, 'getChartData']);
+
 // Handle logout
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 

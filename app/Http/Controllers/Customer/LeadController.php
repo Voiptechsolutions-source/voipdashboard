@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ConvertLead; // ✅ Add this
-use App\Models\Lead; // ✅ Add this if needed
+//use App\Models\Lead; // ✅ Add this if needed
 use Carbon\Carbon;
 
 class LeadController extends Controller

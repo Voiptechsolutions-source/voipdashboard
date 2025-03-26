@@ -2,12 +2,12 @@
 
 @section('title', 'Dashboard')
 
-//@section('content')
-        <div class="pagetitle">
-      <h1>Dashboard</h1>
-    </div>                                                                                                                                                                                                                                                                                                           
+@section('content')
+    <div class="pagetitle">
+        <h1>Dashboard</h1>
+    </div>
 
-    <section class="section dashboard">
+   <section class="section dashboard">
       <div class="row">
 
         <!-- Left side columns -->
@@ -122,7 +122,7 @@
 
             <!-- Reports -->
             <div class="col-12">
-              <div class="card">
+              <div class="card report-card">
 
                 <div class="filter">
                   <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -131,71 +131,130 @@
                       <h6>Filter</h6>
                     </li>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                    <li><a class="dropdown-item" href="#" data-filter="today">Today</a></li>
+                    <li><a class="dropdown-item" href="#" data-filter="month">This Month</a></li>
+                    <li><a class="dropdown-item" href="#" data-filter="year">This Year</a></li>
                   </ul>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body chart-container">
                   <h5 class="card-title">Reports <span>/Today</span></h5>
 
-                    <div id="reportsChart"></div>
+                    <canvas id="reportsChart"></canvas>
 
               </div>
             </div>
           </div>
         <!-- End Reports -->
-            <!-- Recent Sales -->
-            <div class="col-12">
-              <div class="card recent-sales overflow-auto">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">Recent Sales <span>| Today</span></h5>
-
-                  <div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-columns"><div class="datatable-top">
-    <div class="datatable-dropdown">
-            <label>
-                <select class="datatable-selector" name="per-page"><option value="5">5</option><option value="10" selected="">10</option><option value="15">15</option><option value="-1">All</option></select> entries per page
-            </label>
-        </div>
-    <div class="datatable-search">
-            <input class="datatable-input" placeholder="Search..." type="search" name="search" title="Search within table">
-        </div>
-</div>
-<div class="datatable-container"><table class="table table-borderless datatable datatable-table"><thead><tr><th scope="col" data-sortable="true" style="width: 10.714285714285714%;"><button class="datatable-sorter">#</button></th><th scope="col" data-sortable="true" style="width: 23.511904761904763%;"><button class="datatable-sorter">Customer</button></th><th scope="col" data-sortable="true" style="width: 39.285714285714285%;"><button class="datatable-sorter">Product</button></th><th scope="col" data-sortable="true" style="width: 11.755952380952381%;"><button class="datatable-sorter">Price</button></th><th scope="col" data-sortable="true" class="red" style="width: 14.732142857142858%;"><button class="datatable-sorter">Status</button></th></tr></thead><tbody><tr data-index="0"><td scope="row"><a href="#">#2457</a></td><td>Brandon Jacob</td><td><a href="#" class="text-primary">At praesentium minu</a></td><td>$64</td><td class="green"><span class="badge bg-success">Approved</span></td></tr><tr data-index="1"><td scope="row"><a href="#">#2147</a></td><td>Bridie Kessler</td><td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td><td>$47</td><td class="green"><span class="badge bg-warning">Pending</span></td></tr><tr data-index="2"><td scope="row"><a href="#">#2049</a></td><td>Ashleigh Langosh</td><td><a href="#" class="text-primary">At recusandae consectetur</a></td><td>$147</td><td class="green"><span class="badge bg-success">Approved</span></td></tr><tr data-index="3"><td scope="row"><a href="#">#2644</a></td><td>Angus Grady</td><td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td><td>$67</td><td class="green"><span class="badge bg-danger">Rejected</span></td></tr><tr data-index="4"><td scope="row"><a href="#">#2644</a></td><td>Raheem Lehner</td><td><a href="#" class="text-primary">Sunt similique distinctio</a></td><td>$165</td><td class="green"><span class="badge bg-success">Approved</span></td></tr></tbody></table></div>
-<div class="datatable-bottom">
-    <div class="datatable-info">Showing 1 to 5 of 5 entries</div>
-    <nav class="datatable-pagination"><ul class="datatable-pagination-list"></ul></nav>
-</div></div>
-
-                </div>
-
-              </div>
-            </div><!-- End Recent Sales -->
-
-            
-
-          </div>
-        </div><!-- End Left side columns -->
-
         
-
-      </div>
-    
+    </section>
 @endsection
 
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+    let dashboardChart;
+    fetchDashboardData('today'); // Load default card data
+    fetchReportsData('today'); // Load default reports data
+
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', function (event) {
+            event.preventDefault();
+            let filterValue = this.getAttribute('data-filter');
+            
+            let parentCard = this.closest('.info-card');
+
+            if (parentCard) {
+                let category = parentCard.querySelector('.dropdown-menu').getAttribute('data-category');
+                fetchDashboardData(filterValue, category);
+                parentCard.querySelector('.card-title span').innerText = `| ${this.innerText}`;
+            } else {
+                fetchReportsData(filterValue);
+                let reportCard = document.querySelector('.report-card .card-title span');
+                if (reportCard) {
+                    reportCard.innerText = `/ ${this.innerText}`;
+                }
+            }
+
+            this.closest('.dropdown-menu').querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    function fetchDashboardData(filterValue, category = 'all') {
+        fetch(`/dashboard/filter?filter=${filterValue}&category=${category}`)
+            .then(response => response.json())
+            .then(data => {
+                if (category === 'all' || category === 'new-leads') {
+                    document.getElementById('newLeadsCount').innerText = data.newLeads || 0;
+                }
+                if (category === 'all' || category === 'revenue') {
+                    document.getElementById('totalRevenue').innerText = data.revenue || 0;
+                }
+                if (category === 'all' || category === 'total-customers') {
+                    document.getElementById('totalCustomersCount').innerText = data.totalCustomers || 0;
+                }
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
+    function fetchReportsData(filterValue) {
+        fetch(`/dashboard/chart-data?filter=${filterValue}`)
+            .then(response => response.json())
+            .then(data => {
+                updateChart(data);
+            })
+            .catch(error => console.error('Error fetching reports:', error));
+    }
+
+    function updateChart(data) {
+    let cardBody = document.querySelector('.card-body.chart-container');
+
+    if (!cardBody) {
+        console.error("No .card-body.chart-container found!");
+        return;
+    }
+
+    let chartContainer = document.getElementById('reportsChart');
+    if (chartContainer) {
+        chartContainer.remove();
+    }
+
+    let newCanvas = document.createElement('canvas');
+    newCanvas.id = 'reportsChart';
+    cardBody.appendChild(newCanvas);
+
+    let ctx = newCanvas.getContext('2d');
+
+    if (window.dashboardChart) {
+        window.dashboardChart.destroy();
+    }
+
+    window.dashboardChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['New Leads', 'Revenue', 'Customers'],
+            datasets: [{
+                label: 'Report',
+                data: [data.newLeads, data.revenue, data.totalCustomers],
+                backgroundColor: ['#76acce', '#f3b032', '#3fb799'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+}
+});
+
+</script>
+<style>
+
+
+@endsection

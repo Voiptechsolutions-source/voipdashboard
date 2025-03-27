@@ -37,6 +37,25 @@ class CustomerApiController extends Controller
             return response()->json(['error' => 'Invalid Token'], 401);
         }
 
+            // **Step 1: Validate Input Fields**
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required|string|max:255',
+            'country_code' => 'required|string|max:10',
+            'contact_no' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'number_of_users' => 'required|integer|min:1',
+            'services' => 'required|string|max:255',
+            'service_type' => 'required|string|max:255',
+            
+        ]);
+
+        // If validation fails, return errors
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Validation Failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
         // Store customer lead
         try {
             $customer = new Customer();

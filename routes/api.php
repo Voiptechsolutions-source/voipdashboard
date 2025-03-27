@@ -11,7 +11,7 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/savelead', [CustomerApiController::class, 'savecustomerlead']);
 Route::post('/webhook/google-ads', [WebhookController::class, 'handle']);
-
+Route::post('/facebook-webhook', [WebhookController::class, 'facebookWebhook']);
 
 
 

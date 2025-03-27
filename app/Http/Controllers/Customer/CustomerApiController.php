@@ -44,10 +44,9 @@ class CustomerApiController extends Controller
             'country_code' => 'required|string|max:10',
             'contact_no' => 'required|string|max:20',
             'email' => 'required|email|max:255',
-            'number_of_users' => 'required|integer|min:1',
+            'number_of_users' => 'nullable|integer|min:1', // Now optional
             'services' => 'required|string|max:255',
             'service_type' => 'required|string|max:255',
-            
         ]);
 
         // If validation fails, return errors

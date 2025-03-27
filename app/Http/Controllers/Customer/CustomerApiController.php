@@ -53,7 +53,10 @@ class CustomerApiController extends Controller
             $customer->raw_data = json_encode($request->all());
             $customer->save();
 
-            return response()->json(['success' => 'Customer lead saved successfully'], 201);
+            return response()->json([
+                'status' => 'success', // Add this
+                'success' => 'Customer lead saved successfully'
+            ], 201);
         } catch (\Exception $e) {
             Log::error('Database Error', ['message' => $e->getMessage()]);
             return response()->json(['error' => 'Database Error', 'message' => $e->getMessage()], 500);

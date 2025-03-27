@@ -72,11 +72,23 @@ class WebhookController extends Controller
 
     public function facebookWebhook(Request $request)
     {
+        // ✅ Fetch Access Token from .env
         $access_token = env('FACEBOOK_ACCESS_TOKEN');
 
+        // ✅ Handle Facebook Webhook Verification
+        if ($request->has('hub_mode') && $request->input('hub_mode') === 'subscribe') {
+            if ($request->input('hub_verify_token') === env('FACEBOOK_VERIFY_TOKEN')) {
+                return response($request->input('hub_challenge'), 200);
+            } else {
+                return response('Invalid verification token', 403);
+            }
+        }
+
+        // ✅ Capture Webhook Payload
         $payload = $request->all();
         Log::info('Webhook Payload:', $payload);
 
+        // ✅ Extract Lead ID
         $leadgen_id = $payload['entry'][0]['changes'][0]['value']['leadgen_id'] ?? null;
 
         if (!$leadgen_id) {
@@ -89,17 +101,24 @@ class WebhookController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Access Token not set in ENV'], 500);
         }
 
+        // ✅ Fetch Lead Data from Facebook Graph API
         $lead_url = "https://graph.facebook.com/v22.0/$leadgen_id?access_token=$access_token";
         $response = Http::get($lead_url);
         $lead_data = $response->json();
 
         Log::info('Facebook API Response:', $lead_data);
 
+        // ✅ Handle Facebook API Errors
         if (isset($lead_data['error'])) {
             Log::error('Facebook API Error:', $lead_data['error']);
-            return response()->json(['status' => 'error', 'message' => 'Failed to retrieve lead data', 'error' => $lead_data['error']], 400);
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Failed to retrieve lead data',
+                'error'   => $lead_data['error']
+            ], 400);
         }
 
+        // ✅ Extract Lead Details
         $full_name = $email = $phone = 'N/A';
         if (isset($lead_data['field_data'])) {
             foreach ($lead_data['field_data'] as $field) {
@@ -113,6 +132,7 @@ class WebhookController extends Controller
             }
         }
 
+        // ✅ Store Lead Data in Database
         try {
             $customer = Customer::create([
                 'full_name'  => $full_name,
@@ -125,10 +145,17 @@ class WebhookController extends Controller
 
             Log::info('New lead stored:', ['customer_id' => $customer->id]);
 
-            return response()->json(['status' => 'success', 'message' => 'Lead stored successfully', 'data' => $customer], 201);
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Lead stored successfully',
+                'data'    => $customer
+            ], 201);
         } catch (\Exception $e) {
             Log::error('Database Error:', ['error' => $e->getMessage()]);
-            return response()->json(['status' => 'error', 'message' => 'Failed to store lead data'], 500);
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Failed to store lead data'
+            ], 500);
         }
     }
 

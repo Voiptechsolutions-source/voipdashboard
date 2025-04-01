@@ -78,6 +78,7 @@ $(document).ready(function() {
                 $('#detailFullName').text(data.full_name ? data.full_name : 'No data available');
                 $('#detailEmail').text(data.email ? data.email : 'No data available');
                 $('#detailContact').text(data.contact_no ? data.contact_no : 'No data available');
+                $('#detailCountrycode').text(data.country_code ? data.country_code : 'No data available');
                 $('#detailAddress').text(data.address ? data.address : 'No data available');
                 $('#detailMessage').text(data.message ? data.message : 'No data available');
                 $('#detailDescription').text(data.description ? data.description : 'No data available');
@@ -86,6 +87,7 @@ $(document).ready(function() {
                 $('#detailUsers').text(data.number_of_users ? data.number_of_users : 'No data available');
                 $('#detailComment').text(data.comment ? data.comment : 'No data available');
                 $('#detailCustomerDesc').text(data.customer_description ? data.customer_description : 'No data available');
+                $('#detailcreateddate').text(data.created_at ? data.created_at : 'No data available');
                 $('#detailLeadID').text(data.lead_id ? data.lead_id : 'No data available');
                 $('#detailCampaignID').text(data.campaign_id ? data.campaign_id : 'No data available');
                 $('#detailFormID').text(data.form_id ? data.form_id : 'No data available');

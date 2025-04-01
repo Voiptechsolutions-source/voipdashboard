@@ -79,8 +79,10 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+
         <p><strong>Full Name:</strong> <span id="detailFullName"></span></p>
         <p><strong>Email:</strong> <span id="detailEmail"></span></p>
+        <p><strong>Country code:</strong> <span id="detailCountrycode"></span></p>
         <p><strong>Contact No:</strong> <span id="detailContact"></span></p>
         <p><strong>Address:</strong> <span id="detailAddress"></span></p>
         <p><strong>Message:</strong> <span id="detailMessage"></span></p>
@@ -90,6 +92,7 @@
         <p><strong>Number of Users:</strong> <span id="detailUsers"></span></p>
         <p><strong>Comment:</strong> <span id="detailComment"></span></p>
         <p><strong>Customer Description:</strong> <span id="detailCustomerDesc"></span></p>
+        <p><strong>Created Date:</strong> <span id="detailcreateddate"></span></p>
         <p><strong>Lead ID:</strong> <span id="detailLeadID"></span></p>
         <p><strong>Campaign ID:</strong> <span id="detailCampaignID"></span></p>
         <p><strong>Form ID:</strong> <span id="detailFormID"></span></p>

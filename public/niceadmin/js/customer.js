@@ -7,8 +7,10 @@ $(document).ready(function() {
         columns: [
         { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
         { data: 'id', name: 'id' },
+        { data: 'created_at', name: 'created_at' },
         { data: 'full_name', name: 'full_name' },
         { data: 'email', name: 'email' },
+        { data: 'country_code', name: 'country_code' },
         { data: 'contact_no', name: 'contact_no' },
         { data: 'status', name: 'status' },
         { data: 'source', name: 'source' },
@@ -66,6 +68,7 @@ $(document).ready(function() {
             url: "/customers/" + customerId,  // Route to fetch customer details
             type: "GET",
             success: function(data) {
+                console.log(data);
                 function getStatusButton(status) {
                     switch (status) {
                         case '0': return '<button class="btn btn-danger btn-sm">Pending</button>';

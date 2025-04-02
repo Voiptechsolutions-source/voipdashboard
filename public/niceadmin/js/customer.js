@@ -163,7 +163,7 @@ $(document).ready(function() {
                             }, 500);
 
                             $('.update-status[data-id="' + customerId + '"]').text("Complete")
-                                .removeClass('btn-danger').addClass('btn-success');
+                                .removeClass('btn-success').addClass('btn-success');
 
                             $('#status').prop('disabled', true); // ✅ Disable dropdown
 

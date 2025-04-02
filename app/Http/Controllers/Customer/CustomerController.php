@@ -17,7 +17,8 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Customer::query();
+            //$data = Customer::query();
+             $data = Customer::select(['id', 'full_name', 'email', 'country_code', 'contact_no', 'address','pincode', 'is_active', 'is_delete', 'service_name', 'number_of_users','message', 'comment', 'description', 'customer_description', 'lead_id','campaign_id', 'form_id', 'source', 'status', 'convertedlead','created_at']);
 
             return DataTables::of($data)
                 ->addIndexColumn()

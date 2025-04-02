@@ -35,10 +35,9 @@ Route::middleware(['auth:web'])->group(function () {
 
     Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('customers.show');
 
-    Route::post('/update-status', [CustomerController::class, 'updateStatus'])->name('customers.updateStatus');
+    Route::post('/update-status/{id}', [CustomerController::class, 'updateStatus'])->name('update.status');
 
-
-        Route::delete('/customers/{id}', [CustomerController::class, 'destroy']);
+    Route::delete('/customers/{id}', [CustomerController::class, 'destroy']);
 
 
     Route::get('/customers/{id}/edit', [CustomerController::class, 'edit']);
@@ -58,6 +57,10 @@ Route::middleware(['auth:web'])->group(function () {
 
     //converted Leads
     Route::get('/converted-leads', [ConvertedLeadsController::class, 'index'])->name('converted.leads');
+
+    Route::post('/convert-lead', [LeadController::class, 'convertLead']);
+
+    
 
     //support page
 

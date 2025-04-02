@@ -65,7 +65,6 @@
                 <th>Source</th>
                 <th>Service</th>
                 <th>Service Type</th>
-                <th>ConvertLead</th>
                 <th>View</th>  <!-- New Column -->
                 <th>Edit</th>  
                 <th>Delete</th>

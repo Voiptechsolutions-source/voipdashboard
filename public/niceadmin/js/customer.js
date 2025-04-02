@@ -16,7 +16,7 @@ $(document).ready(function() {
         { data: 'source', name: 'source' },
         { data: 'service_name', name: 'service_name' },
         { data: 'service_type', name: 'service_type' },
-        { data: 'ConvertLead', name: 'action', orderable: false, searchable: false},
+        //{ data: 'ConvertLead', name: 'action', orderable: false, searchable: false},
         { data: 'view', name: 'view', orderable: false, searchable: false},
         { data: 'Edit', name: 'view', orderable: false, searchable: false},
         { data: 'Delete', name: 'view', orderable: false, searchable: false},  // New column
@@ -128,27 +128,67 @@ $(document).ready(function() {
 
     // Handle form submission to update status
     $('#updateStatusForm').on('submit', function (e) {
-        e.preventDefault(); // Prevent page reload
+        e.preventDefault();
 
-        var formData = $(this).serialize(); // Serialize form data
+        let formData = $(this).serialize();
+        let customerId = $('#rowId').val();
+        let newStatus = $('#status').val();
+
+        console.log("Submitting Status Update for ID:", customerId);
+        console.log("Selected Status:", newStatus);
 
         $.ajax({
-            url: "/update-status", // Update route
-            type: "POST", // Ensure POST request
+            url: "/update-status/" + customerId,
+            type: "POST",
             data: formData,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Laravel CSRF token
-            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function (response) {
+                console.log("Status Update Response:", response);
                 alert(response.message);
-                $('#statusModal').modal('hide'); // Close modal
-                location.reload(); // Reload page
+
+                if (newStatus === "1") {
+                    // ✅ Prevent users from changing back to Pending
+                    console.log("Triggering Lead Conversion for:", customerId);
+                    $.ajax({
+                        url: '/convert-lead',
+                        type: 'POST',
+                        data: { lead_id: customerId },
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        success: function (convertResponse) {
+                            console.log("Lead Conversion Response:", convertResponse);
+                            alert("Lead converted successfully!");
+
+                            setTimeout(function () {
+                                $('#status').val("1").trigger('change');
+                            }, 500);
+
+                            $('.update-status[data-id="' + customerId + '"]').text("Complete")
+                                .removeClass('btn-danger').addClass('btn-success');
+
+                            $('#status').prop('disabled', true); // ✅ Disable dropdown
+
+                            $('#statusModal').modal('hide');
+                        },
+                        error: function (xhr) {
+                            console.log("Lead Conversion Error:", xhr);
+                            alert("Error converting lead: " + (xhr.responseJSON?.message || "Unknown error"));
+                        }
+                    });
+
+                } else {
+                    // ❌ Prevent deletion if status is already "Complete"
+                    console.log("Lead status change blocked. Once converted, it cannot be reverted to Pending.");
+                    alert("You cannot change a Completed lead back to Pending.");
+                    $('#status').val("1").trigger('change'); // Reset back to "Complete"
+                }
             },
-            error: function () {
-                alert("Error updating status.");
+            error: function (xhr) {
+                console.log("Status Update Error:", xhr);
+                alert("Failed to update status: " + (xhr.responseJSON?.message || "Unknown error"));
             }
         });
     });
+
 
     //Delete Row
     $(document).on('click', '.delete-row', function() {

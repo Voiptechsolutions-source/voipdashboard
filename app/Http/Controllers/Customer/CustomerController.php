@@ -18,8 +18,7 @@ class CustomerController extends Controller
     {
         if ($request->ajax()) {
             $data = Customer::query();
-             
-            print_r($data);
+
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('status', function ($row) {

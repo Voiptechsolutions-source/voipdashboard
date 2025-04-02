@@ -67,6 +67,16 @@ class CustomerController extends Controller
         }
         return response()->json(['message' => 'Customer not found!'], 404);
     }
+    //update status
+    public function updateStatus(Request $request)
+    {
+        $customer = Customer::findOrFail($request->id);
+        $customer->status = $request->status;
+        $customer->description = $request->description;
+        $customer->save();
+
+        return response()->json(['success' => true, 'message' => 'Status updated successfully!']);
+    }
 
     // ✅ Update Customer Data
     public function update(Request $request, $id)

@@ -9,6 +9,7 @@ $(document).ready(function() {
         { data: 'id', name: 'id' },
         { data: 'full_name', name: 'full_name' },
         { data: 'email', name: 'email' },
+        { data: 'country_code', name: 'country_code' },
         { data: 'contact_no', name: 'contact_no' },
         { data: 'status', name: 'status' },
         { data: 'source', name: 'source' },

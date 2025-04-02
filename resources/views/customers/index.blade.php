@@ -56,8 +56,10 @@
             <tr>
                 <th>#</th>
                 <th>ID</th>
+                <th>Date</th>
                 <th>Full Name</th>
                 <th>Email</th>
+                <th>Country Code</th>
                 <th>Contact No</th>
                 <th>Status</th>
                 <th>Source</th>

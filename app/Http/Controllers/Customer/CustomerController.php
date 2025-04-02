@@ -51,6 +51,13 @@ class CustomerController extends Controller
         return view('customers.index');
     }
 
+    // ✅ Show single customer
+    public function show($id)
+    {
+        $customer = Customer::findOrFail($id);
+        return response()->json($customer);
+    }
+
     // Fetch customer data for editing
     public function edit($id)
     {

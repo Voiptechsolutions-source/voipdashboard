@@ -9,6 +9,7 @@ $(document).ready(function() {
         { data: 'id', name: 'id' },
         { data: 'full_name', name: 'full_name' },
         { data: 'email', name: 'email' },
+        { data: 'country_code', name: 'country_code' },
         { data: 'contact_no', name: 'contact_no' },
         { data: 'status', name: 'status' },
         { data: 'source', name: 'source' },
@@ -22,7 +23,7 @@ $(document).ready(function() {
         order: [[1, 'desc']],
         paging: true,
         lengthMenu: [100,200,300,400],
-        pageLength: 10,
+        pageLength: 100,
         dom: 'lBfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'

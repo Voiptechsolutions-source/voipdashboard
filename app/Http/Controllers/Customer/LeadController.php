@@ -1,14 +1,15 @@
 <?php
+
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ConvertLead; // ✅ Add this
-//use App\Models\Lead; // ✅ Add this if needed
+use App\Models\ConvertLead;
 use Carbon\Carbon;
 
 class LeadController extends Controller
 {
+    // ✅ Convert Lead Function
     public function convertLead(Request $request)
     {
         $leadId = $request->input('lead_id');
@@ -22,9 +23,14 @@ class LeadController extends Controller
         ConvertLead::create([
             'lead_id' => $leadId,
             'converted_at' => Carbon::now(),
+            'created_at' => Carbon::now(),  // ✅ Use Carbon for consistency
+            'updated_at' => Carbon::now(),
+            'is_active' => true,  // ✅ Default active
+            'is_delete' => false, // ✅ Default not deleted
         ]);
 
         return response()->json(['message' => 'Lead converted successfully!']);
     }
 }
+
 ?>

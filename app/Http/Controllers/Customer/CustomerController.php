@@ -29,12 +29,7 @@ class CustomerController extends Controller
 
                     return '<button class="btn ' . $statusClass . ' btn-sm update-status" data-id="' . $row->id . '">' . $statusText . '</button>';
                 }) // ✅ Fixed missing closing parenthesis here
-                ->addColumn('ConvertLead', function ($row) {
-                    $convertedClass = ($row->convertedlead == 1) ? "btn-secondary disabled" : "btn-success";
-                    $convertedText = ($row->convertedlead == 1) ? "Already Converted" : "Convert Lead";
-
-                    return '<button class="btn ' . $convertedClass . ' btn-sm convert-lead" data-id="' . $row->id . '">' . $convertedText . '</button>';
-                })
+                
                 ->addColumn('view', function ($row) {
                     return '<button class="btn btn-info btn-sm view-details" data-id="' . $row->id . '">View</button>';
                 })
@@ -68,14 +63,19 @@ class CustomerController extends Controller
         return response()->json(['message' => 'Customer not found!'], 404);
     }
     //update status
-    public function updateStatus(Request $request)
+    public function updateStatus(Request $request, $id)
     {
-        $customer = Customer::findOrFail($request->id);
+        $customer = Customer::find($id);
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+
         $customer->status = $request->status;
         $customer->description = $request->description;
         $customer->save();
 
-        return response()->json(['success' => true, 'message' => 'Status updated successfully!']);
+        return response()->json(['message' => 'Status updated successfully']);
     }
 
     // ✅ Update Customer Data

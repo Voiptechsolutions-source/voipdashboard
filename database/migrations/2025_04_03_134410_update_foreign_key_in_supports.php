@@ -12,28 +12,37 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // ✅ Check if the `customers` table exists before renaming
-        if (Schema::hasTable('customers') && !Schema::hasTable('leads')) {
-            Schema::rename('customers', 'leads');
-        }
-
-        // ✅ Update foreign key references (if applicable)
-        Schema::table('supports', function (Blueprint $table) {
-            // Check if foreign key exists before dropping
-            $foreignKeys = DB::select("SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE 
-                                       WHERE TABLE_NAME = 'supports' AND COLUMN_NAME = 'lead_id' 
-                                       AND CONSTRAINT_SCHEMA = DATABASE()");
-
-            if (!empty($foreignKeys)) {
-                $table->dropForeign(['lead_id']);
+        DB::beginTransaction();
+        try {
+            // ✅ Check if `customers` exists and rename to `leads` only if `leads` doesn't exist
+            if (Schema::hasTable('customers') && !Schema::hasTable('leads')) {
+                Schema::rename('customers', 'leads');
             }
 
-            // Re-add foreign key pointing to `leads` instead of `customers`
-            $table->foreign('lead_id')
-                  ->references('id')
-                  ->on('leads')
-                  ->onDelete('cascade');
-        });
+            // ✅ Modify `supports` table only if it exists
+            if (Schema::hasTable('supports')) {
+                Schema::table('supports', function (Blueprint $table) {
+                    // ✅ Drop foreign key if it exists before altering column
+                    if ($this->foreignKeyExists('supports', 'lead_id')) {
+                        $table->dropForeign(['lead_id']);
+                    }
+
+                    // ✅ Ensure `lead_id` is unsignedBigInteger (required for FK)
+                    $table->unsignedBigInteger('lead_id')->change();
+
+                    // ✅ Re-add foreign key pointing to `leads`
+                    $table->foreign('lead_id')
+                        ->references('id')
+                        ->on('leads')
+                        ->onDelete('cascade');
+                });
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -41,27 +50,47 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // ✅ Rollback: Rename `leads` back to `customers`
-        if (Schema::hasTable('leads') && !Schema::hasTable('customers')) {
-            Schema::rename('leads', 'customers');
-        }
+        DB::beginTransaction();
+        try {
+            // ✅ Modify `supports` table only if it exists
+            if (Schema::hasTable('supports')) {
+                Schema::table('supports', function (Blueprint $table) {
+                    // ✅ Drop foreign key if it exists
+                    if ($this->foreignKeyExists('supports', 'lead_id')) {
+                        $table->dropForeign(['lead_id']);
+                    }
 
-        // ✅ Restore foreign key reference (if necessary)
-        Schema::table('supports', function (Blueprint $table) {
-            // Drop the updated foreign key
-            $foreignKeys = DB::select("SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE 
-                                       WHERE TABLE_NAME = 'supports' AND COLUMN_NAME = 'lead_id' 
-                                       AND CONSTRAINT_SCHEMA = DATABASE()");
+                    // ✅ Ensure `lead_id` is still unsignedBigInteger
+                    $table->unsignedBigInteger('lead_id')->change();
 
-            if (!empty($foreignKeys)) {
-                $table->dropForeign(['lead_id']);
+                    // ✅ Re-add foreign key pointing back to `customers`
+                    $table->foreign('lead_id')
+                        ->references('id')
+                        ->on('customers')
+                        ->onDelete('cascade');
+                });
             }
 
-            // Re-add foreign key pointing to `customers` again
-            $table->foreign('lead_id')
-                  ->references('id')
-                  ->on('customers')
-                  ->onDelete('cascade');
-        });
+            // ✅ Rename `leads` back to `customers`
+            if (Schema::hasTable('leads') && !Schema::hasTable('customers')) {
+                Schema::rename('leads', 'customers');
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Helper function to check if a foreign key exists on a table.
+     */
+    private function foreignKeyExists(string $table, string $column): bool
+    {
+        return DB::select("
+            SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE
+            WHERE TABLE_NAME = ? AND COLUMN_NAME = ? AND CONSTRAINT_SCHEMA = DATABASE()
+        ", [$table, $column]) !== [];
     }
 };

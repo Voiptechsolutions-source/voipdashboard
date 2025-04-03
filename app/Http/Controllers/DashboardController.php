@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ConvertLead;
 use App\Models\Support;
-use App\Models\Customer;
+use App\Models\Lead;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -48,12 +48,12 @@ class DashboardController extends Controller
             ->sum('revenue_per_day');
 
         // Aggregate Customers
-        $totalCustomers = Customer::where('status', 2)
+        $totalCustomers = Lead::where('status', 2)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->count();
 
         // Aggregate Leads
-        $newLeads = Customer::whereBetween('created_at', [$startDate, $endDate])
+        $newLeads = Lead::whereBetween('created_at', [$startDate, $endDate])
             ->count();
 
         return response()->json([
@@ -90,7 +90,7 @@ class DashboardController extends Controller
 
         // Get new leads (status = 2)
         $newLeads = ($category === 'all' || $category === 'new-leads')
-            ? Customer::where('status', 2)
+            ? Lead::where('status', 2)
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->count()
             : null;
@@ -103,7 +103,7 @@ class DashboardController extends Controller
 
         // Get total customers
         $totalCustomers = ($category === 'all' || $category === 'total-customers')
-            ? Customer::whereBetween('created_at', [$startDate, $endDate])->count()
+            ? Lead::whereBetween('created_at', [$startDate, $endDate])->count()
             : null;
 
         if ($jsonResponse) {

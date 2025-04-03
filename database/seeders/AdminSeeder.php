@@ -11,10 +11,10 @@ class AdminSeeder extends Seeder
     public function run()
     {
         User::updateOrCreate(
-            ['email' => 'voip@gmail.com'],
+            ['email' => 'voip@gmail.com'], // Keep the same email to update existing admin
             [
-                'username' => 'voipadmin',
-                'password' => Hash::make('voip123'),
+                'username' => 'VoIP_SuperAdmin', // Stronger username
+                'password' => Hash::make('V0ip@Secure#2025'), // Stronger password
                 'role' => 'superadmin',
                 'is_active' => true,
                 'is_delete' => false,

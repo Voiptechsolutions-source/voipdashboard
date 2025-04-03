@@ -1,11 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <div class="pagetitle">
-            <h1>Converted Leads</h1>
+<div class="container">
+    <div class="pagetitle">
+        <h1>Customers List</h1>
+    </div>
+    <section class="section">
+    <div class="row">
+    <div class="col-lg-12">
+    <div class="card">
+    <div class="card-body">
+    <div class="table-responsive">
+    <div class="container my-3">
+    <div class="row g-2 align-items-center">
+        <!-- Search by Name -->
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" id="nameSearch" class="form-control" placeholder="Search by Name">
+            </div>
         </div>
-
 
         <!-- Search by Email -->
         <div class="col-md-3">
@@ -66,10 +80,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-
         <p><strong>Full Name:</strong> <span id="detailFullName"></span></p>
         <p><strong>Email:</strong> <span id="detailEmail"></span></p>
-        <p><strong>Country code:</strong> <span id="detailCountrycode"></span></p>
         <p><strong>Contact No:</strong> <span id="detailContact"></span></p>
         <p><strong>Address:</strong> <span id="detailAddress"></span></p>
         <p><strong>Message:</strong> <span id="detailMessage"></span></p>
@@ -79,7 +91,6 @@
         <p><strong>Number of Users:</strong> <span id="detailUsers"></span></p>
         <p><strong>Comment:</strong> <span id="detailComment"></span></p>
         <p><strong>Customer Description:</strong> <span id="detailCustomerDesc"></span></p>
-        <p><strong>Created Date:</strong> <span id="detailcreateddate"></span></p>
         <p><strong>Lead ID:</strong> <span id="detailLeadID"></span></p>
         <p><strong>Campaign ID:</strong> <span id="detailCampaignID"></span></p>
         <p><strong>Form ID:</strong> <span id="detailFormID"></span></p>
@@ -202,108 +213,23 @@
                             <div class="form-group">
                                 <label>Comment</label>
                                 <textarea class="form-control" id="editComment" name="comment"></textarea>
-        <section class="section">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="leadsTable" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Full Name</th>
-                                            <th>Email</th>
-                                            <th>Contact No</th>
-                                            <th>Service Name</th>
-                                            
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($leads as $lead)
-                                            <tr>
-                                                <td>{{ $lead->id }}</td>
-                                                <td>{{ $lead->full_name }}</td>
-                                                <td>{{ $lead->email }}</td>
-                                                <td>{{ $lead->contact_no }}</td>
-                                                <td>{{ $lead->service_name }}</td>
-                                                
-                                                <td>
-                                                <button class="btn btn-primary btn-sm add-revenue-btn" 
-                                                    data-lead-id="{{ $lead->id }}" 
-                                                    data-lead-name="{{ $lead->full_name }}"
-                                                    data-lead-email="{{ $lead->email }}"
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#addRevenueModal">
-                                                    Add Revenue
-                                                </button>
-                                                    
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
-    </div>
 
-    
-    <!-- Add Revenue Modal -->
-<!-- Add Revenue Modal -->
-<div class="modal fade" id="addRevenueModal" tabindex="-1" aria-labelledby="addRevenueModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addRevenueModalLabel">Add Revenue</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addRevenueForm">
-                    @csrf
-                    <input type="hidden" name="lead_id" id="leadIdInput">
-
-                    <div class="mb-3">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="leadFullName" disabled>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control" id="leadEmail" disabled>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Notes</label>
-                        <textarea class="form-control" name="notes" rows="3" placeholder="Enter notes..."></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="revenueAmount" class="form-label">Revenue per Day ($)</label>
-                        <input type="number" class="form-control" id="revenueAmount" name="revenue_per_day" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-success">Save Revenue</button>
+                    <button type="submit" class="btn btn-success">Update Customer</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
+</div>
+</div>
+</div>
+</div>
+</div>
+    </section>
+</div>
 
-@endsection
-
-@section('scripts')
-<script>
-    $(document).ready(function () {
-        $('#leadsTable').DataTable(); // Initialize DataTable
-
-        
-    });
-</script>
 @endsection

@@ -43,7 +43,6 @@ class LeadsApiController extends Controller
             'country_code' => 'required|string|max:10',
             'contact_no' => 'required|string|min:8|max:12',
             'email' => 'required|email|max:255',
-            'number_of_users' => 'nullable|integer|min:1',
             'services' => 'nullable|string|max:255',
             'service_type' => 'nullable|string|max:255',
             'source' => 'nullable|string|max:255',

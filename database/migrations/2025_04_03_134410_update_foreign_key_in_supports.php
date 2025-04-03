@@ -19,18 +19,21 @@ return new class extends Migration
                 Schema::rename('customers', 'leads');
             }
 
+            // ✅ Ensure `leads.id` is `unsignedBigInteger`
+            Schema::table('leads', function (Blueprint $table) {
+                $table->unsignedBigInteger('id')->change();
+            });
+
             // ✅ Ensure `supports` table exists before modifying
             if (Schema::hasTable('supports')) {
                 Schema::table('supports', function (Blueprint $table) {
                     // ✅ Drop foreign key if it exists
-                    if ($this->foreignKeyExists('supports', 'lead_id')) {
-                        $table->dropForeign(['lead_id']);
-                    }
+                    $table->dropForeign(['lead_id']);
 
-                    // ✅ Ensure `lead_id` has the same type as `leads.id`
+                    // ✅ Ensure `lead_id` matches `leads.id`
                     $table->unsignedBigInteger('lead_id')->change();
 
-                    // ✅ Re-add foreign key pointing to `leads`
+                    // ✅ Re-add foreign key
                     $table->foreign('lead_id')
                         ->references('id')
                         ->on('leads')
@@ -56,12 +59,10 @@ return new class extends Migration
             if (Schema::hasTable('supports')) {
                 Schema::table('supports', function (Blueprint $table) {
                     // ✅ Drop foreign key before rollback
-                    if ($this->foreignKeyExists('supports', 'lead_id')) {
-                        $table->dropForeign(['lead_id']);
-                    }
+                    $table->dropForeign(['lead_id']);
 
                     // ✅ Restore `lead_id` data type (assuming previous type was `unsignedBigInteger`)
-                    $table->unsignedBigInteger('lead_id')->change();
+                    $table->bigInteger('lead_id')->change();
 
                     // ✅ Re-add foreign key pointing back to `customers`
                     $table->foreign('lead_id')
@@ -81,16 +82,5 @@ return new class extends Migration
             DB::rollBack();
             throw $e;
         }
-    }
-
-    /**
-     * Helper function to check if a foreign key exists on a table.
-     */
-    private function foreignKeyExists(string $table, string $column): bool
-    {
-        return DB::select("
-            SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE
-            WHERE TABLE_NAME = ? AND COLUMN_NAME = ? AND CONSTRAINT_SCHEMA = DATABASE()
-        ", [$table, $column]) !== [];
     }
 };

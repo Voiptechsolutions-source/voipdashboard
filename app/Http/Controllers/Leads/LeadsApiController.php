@@ -41,7 +41,7 @@ class LeadsApiController extends Controller
         $validator = Validator::make($request->all(), [
             'full_name' => 'required|string|max:255',
             'country_code' => 'required|string|max:10',
-            'contact_no' => 'required|string|max:20',
+            'contact_no' => 'required|string|min:8|max:12',
             'email' => 'required|email|max:255',
             'number_of_users' => 'nullable|integer|min:1',
             'services' => 'nullable|string|max:255',

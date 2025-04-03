@@ -60,7 +60,7 @@ class LeadsApiController extends Controller
 
         // Store customer lead
         try {
-            $customer = Customer::create([
+            $customer = Lead::create([
                 'full_name' => $request->full_name,
                 'country_code' => $request->country_code,
                 'contact_no' => $request->contact_no,

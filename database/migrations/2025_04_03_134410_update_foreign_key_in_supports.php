@@ -12,49 +12,43 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::beginTransaction();
-        try {
-            // ✅ Rename 'customers' table to 'leads' if necessary
-            if (Schema::hasTable('customers') && !Schema::hasTable('leads')) {
-                Schema::rename('customers', 'leads');
-            }
+        // ✅ Rename 'customers' table to 'leads' if necessary
+        if (Schema::hasTable('customers') && !Schema::hasTable('leads')) {
+            Schema::rename('customers', 'leads');
+        }
 
-            // ✅ Ensure `supports` table exists before modifying
-            if (Schema::hasTable('supports')) {
-                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // ✅ Ensure `supports` table exists before modifying
+        if (Schema::hasTable('supports')) {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-                // ✅ Check if the foreign key exists before dropping it
-                $foreignKeys = DB::select("SELECT CONSTRAINT_NAME 
-                    FROM information_schema.KEY_COLUMN_USAGE 
-                    WHERE TABLE_NAME = 'supports' 
-                    AND CONSTRAINT_NAME = 'supports_lead_id_foreign'");
+            // ✅ Check if the foreign key exists before dropping it
+            $foreignKeys = DB::select("SELECT CONSTRAINT_NAME 
+                FROM information_schema.TABLE_CONSTRAINTS 
+                WHERE TABLE_NAME = 'supports' 
+                AND CONSTRAINT_TYPE = 'FOREIGN KEY'");
 
-                if (!empty($foreignKeys)) {
+            foreach ($foreignKeys as $fk) {
+                if ($fk->CONSTRAINT_NAME == 'supports_lead_id_foreign') {
                     Schema::table('supports', function (Blueprint $table) {
-                        $table->dropForeign(['lead_id']);
+                        $table->dropForeign('supports_lead_id_foreign');
                     });
                 }
-
-                // ✅ Ensure `lead_id` column exists and update its type
-                if (Schema::hasColumn('supports', 'lead_id')) {
-                    Schema::table('supports', function (Blueprint $table) {
-                        $table->unsignedBigInteger('lead_id')->change();
-
-                        // ✅ Re-add foreign key pointing to `leads`
-                        $table->foreign('lead_id')
-                            ->references('id')
-                            ->on('leads')
-                            ->onDelete('cascade');
-                    });
-                }
-
-                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             }
 
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
+            // ✅ Ensure `lead_id` column exists and update its type
+            if (Schema::hasColumn('supports', 'lead_id')) {
+                Schema::table('supports', function (Blueprint $table) {
+                    $table->unsignedBigInteger('lead_id')->change();
+
+                    // ✅ Re-add foreign key pointing to `leads`
+                    $table->foreign('lead_id')
+                        ->references('id')
+                        ->on('leads')
+                        ->onDelete('cascade');
+                });
+            }
+
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         }
     }
 
@@ -63,30 +57,43 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::beginTransaction();
-        try {
-            if (Schema::hasTable('supports')) {
-                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // ✅ Ensure `supports` table exists before modifying
+        if (Schema::hasTable('supports')) {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-                // ✅ Check if the foreign key exists before dropping it
-                $foreignKeys = DB::select("SELECT CONSTRAINT_NAME 
-                    FROM information_schema.KEY_COLUMN_USAGE 
-                    WHERE TABLE_NAME = 'supports' 
-                    AND CONSTRAINT_NAME = 'supports_lead_id_foreign'");
+            // ✅ Check if the foreign key exists before dropping it
+            $foreignKeys = DB::select("SELECT CONSTRAINT_NAME 
+                FROM information_schema.TABLE_CONSTRAINTS 
+                WHERE TABLE_NAME = 'supports' 
+                AND CONSTRAINT_TYPE = 'FOREIGN KEY'");
 
-                if (!empty($foreignKeys)) {
+            foreach ($foreignKeys as $fk) {
+                if ($fk->CONSTRAINT_NAME == 'supports_lead_id_foreign') {
                     Schema::table('supports', function (Blueprint $table) {
-                        $table->dropForeign(['lead_id']);
+                        $table->dropForeign('supports_lead_id_foreign');
                     });
                 }
-
-                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             }
 
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
+            // ✅ Ensure `lead_id` column exists and update its type
+            if (Schema::hasColumn('supports', 'lead_id')) {
+                Schema::table('supports', function (Blueprint $table) {
+                    $table->unsignedBigInteger('lead_id')->change();
+
+                    // ✅ Re-add foreign key pointing back to `customers`
+                    $table->foreign('lead_id')
+                        ->references('id')
+                        ->on('customers')
+                        ->onDelete('cascade');
+                });
+            }
+
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        }
+
+        // ✅ Rename `leads` back to `customers`
+        if (Schema::hasTable('leads') && !Schema::hasTable('customers')) {
+            Schema::rename('leads', 'customers');
         }
     }
 };

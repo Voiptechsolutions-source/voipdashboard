@@ -14,20 +14,20 @@ return new class extends Migration
     {
         DB::beginTransaction();
         try {
-            // ✅ Check if `customers` exists and rename to `leads` only if `leads` doesn't exist
+            // ✅ Rename table if required
             if (Schema::hasTable('customers') && !Schema::hasTable('leads')) {
                 Schema::rename('customers', 'leads');
             }
 
-            // ✅ Modify `supports` table only if it exists
+            // ✅ Ensure `supports` table exists before modifying
             if (Schema::hasTable('supports')) {
                 Schema::table('supports', function (Blueprint $table) {
-                    // ✅ Drop foreign key if it exists before altering column
+                    // ✅ Drop foreign key if it exists
                     if ($this->foreignKeyExists('supports', 'lead_id')) {
                         $table->dropForeign(['lead_id']);
                     }
 
-                    // ✅ Ensure `lead_id` is unsignedBigInteger (required for FK)
+                    // ✅ Ensure `lead_id` has the same type as `leads.id`
                     $table->unsignedBigInteger('lead_id')->change();
 
                     // ✅ Re-add foreign key pointing to `leads`
@@ -52,15 +52,15 @@ return new class extends Migration
     {
         DB::beginTransaction();
         try {
-            // ✅ Modify `supports` table only if it exists
+            // ✅ Ensure `supports` table exists before modifying
             if (Schema::hasTable('supports')) {
                 Schema::table('supports', function (Blueprint $table) {
-                    // ✅ Drop foreign key if it exists
+                    // ✅ Drop foreign key before rollback
                     if ($this->foreignKeyExists('supports', 'lead_id')) {
                         $table->dropForeign(['lead_id']);
                     }
 
-                    // ✅ Ensure `lead_id` is still unsignedBigInteger
+                    // ✅ Restore `lead_id` data type (assuming previous type was `unsignedBigInteger`)
                     $table->unsignedBigInteger('lead_id')->change();
 
                     // ✅ Re-add foreign key pointing back to `customers`

@@ -1221,3 +1221,28 @@ h6 {
   font-size: 13px;
   color: #012970;
 }
+/* Target the DataTables search input */
+.dataTables_filter label {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between label and input */
+}
+
+/* Style the search input */
+.dataTables_filter input {
+    padding: 8px 12px !important;  /* Ensure padding applies */
+    border: 2px solid #ccc !important;  /* Ensure border applies */
+    border-radius: 5px;  /* Rounded corners */
+    outline: none;
+    height: 36px; /* Adjust height if needed */
+    margin-top:10px;
+}
+
+/* Style the dropdown */
+.dataTables_length select {
+    padding: 6px 10px !important;
+    border: 2px solid #ccc !important;
+    border-radius: 5px;
+    outline: none;
+    margin-top:10px;
+}

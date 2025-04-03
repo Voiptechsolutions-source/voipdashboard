@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Customer;
+namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Log;
 use App\Imports\CustomersImport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class CustomerImportController extends Controller
+class LeadImportController extends Controller
 {
     public function showImportForm()
     {
-        return view('customers.import'); // Create this Blade view
+        return view('leads.import'); // Create this Blade view
     }
 
     

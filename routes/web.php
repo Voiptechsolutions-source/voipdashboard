@@ -4,11 +4,11 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Customer\CustomerController;
-use App\Http\Controllers\Customer\LeadController;
-use App\Http\Controllers\Customer\CustomerImportController;
-use App\Http\Controllers\Customer\ConvertedLeadsController;
-use App\Http\Controllers\SupportController;
+use App\Http\Controllers\Leads\LeadsController;
+use App\Http\Controllers\Leads\LeadController;
+use App\Http\Controllers\Leads\LeadImportController;
+use App\Http\Controllers\Customers\CustomersController;
+use App\Http\Controllers\Customers\SupportController;
 use App\Http\Controllers\Admin\DeleteController;
 
 
@@ -31,34 +31,34 @@ Route::middleware(['auth:web'])->group(function () {
 
 
     // Customer routes
-    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/leads', [LeadsController::class, 'index'])->name('leads.index');
 
-    Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('customers.show');
+    Route::get('/leads/{id}', [LeadsController::class, 'show'])->name('leads.show');
 
-    Route::post('/update-status/{id}', [CustomerController::class, 'updateStatus'])->name('update.status');
+    Route::post('/update-status/{id}', [LeadsController::class, 'updateStatus'])->name('update.status');
 
-    Route::delete('/customers/{id}', [CustomerController::class, 'destroy']);
+    Route::delete('/leads/{id}', [LeadsController::class, 'destroy']);
 
 
-    Route::get('/customers/{id}/edit', [CustomerController::class, 'edit']);
+    Route::get('/leads/{id}/edit', [LeadsController::class, 'edit']);
 
-    Route::put('/customers/{id}', [CustomerController::class, 'update']);
+    Route::put('/leads/{id}', [LeadsController::class, 'update']);
 
     //Lead contoller
 
-    Route::post('/convert-lead', [LeadController::class, 'convertLead']);
+    //Route::post('/convert-lead', [LeadController::class, 'convertLead']);
 
     //Import customer
 
 
-    Route::get('/import-customers', [CustomerImportController::class, 'showImportForm'])->name('import.customers.form');
+    Route::get('/import-customers', [LeadImportController::class, 'showImportForm'])->name('import.customers.form');
 
-    Route::post('/import-customers', [CustomerImportController::class, 'import'])->name('import.customers');
+    Route::post('/import-customers', [LeadImportController::class, 'import'])->name('import.customers');
 
     //converted Leads
-    Route::get('/converted-leads', [ConvertedLeadsController::class, 'index'])->name('converted.leads');
+    Route::get('/customers', [CustomersController::class, 'index'])->name('converted.leads');
 
-    Route::post('/convert-lead', [LeadController::class, 'convertLead']);
+    //Route::post('/convert-lead', [LeadController::class, 'convertLead']);
 
     
 

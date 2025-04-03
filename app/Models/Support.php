@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon; // ✅ Import Carbon
-use App\Models\ConvertLead; // ✅ Import ConvertLead Model
+use App\Models\Lead; // ✅ Import ConvertLead Model
 
 class Support extends Model
 {
@@ -20,7 +20,7 @@ class Support extends Model
     // Relationship: Each Support entry belongs to a Lead
     public function lead()
     {
-        return $this->belongsTo(ConvertLead::class, 'lead_id');
+        return $this->belongsTo(Lead::class, 'lead_id');
     }
 
     

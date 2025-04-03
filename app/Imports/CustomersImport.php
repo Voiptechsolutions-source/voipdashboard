@@ -1,7 +1,7 @@
 <?php
 namespace App\Imports;
 
-use App\Models\Customer;
+use App\Models\Lead;
 use App\Imports\CustomersImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -13,7 +13,7 @@ class CustomersImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
-         return new Customer([
+         return new Lead([
             'full_name'        => $row['full_name'],
             'email'            => $row['email'],
             'country_code'     => $row['country_code'],

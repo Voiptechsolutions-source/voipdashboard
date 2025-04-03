@@ -15,11 +15,10 @@ class Lead extends Model
     protected $table = 'leads'; // Updated table name
 
     protected $fillable = [
-        'full_name', 'email', 'country_code', 'contact_no', 'address',
-        'pincode', 'is_active', 'is_delete', 'service_name', 'number_of_users',
-        'message', 'comment', 'description', 'customer_description', 'lead_id',
-        'campaign_id', 'form_id', 'source', 'status', 'convertedlead',
-        'created_at' // ✅ Include created_at if filtering by date
+        'full_name', 'email', 'country_code', 'contact_no', 'address', 'pincode', 'industry', 'service_type', 'service_name', 'number_of_users', 
+        'message', 'comment', 'description', 'customer_description', 
+        'lead_id', 'campaign_id', 'form_id', 'source', 'status', 
+        'convertedlead', 'raw_data' // ✅ Include created_at if filtering by date
     ];
 
     protected $casts = [

@@ -14,31 +14,41 @@ return new class extends Migration
     {
         DB::beginTransaction();
         try {
-            // ✅ Rename table if required
+            // ✅ Rename 'customers' table to 'leads' if necessary
             if (Schema::hasTable('customers') && !Schema::hasTable('leads')) {
                 Schema::rename('customers', 'leads');
             }
 
-            // ✅ Ensure `leads.id` is `unsignedBigInteger`
-            Schema::table('leads', function (Blueprint $table) {
-                $table->unsignedBigInteger('id')->change();
-            });
-
             // ✅ Ensure `supports` table exists before modifying
             if (Schema::hasTable('supports')) {
-                Schema::table('supports', function (Blueprint $table) {
-                    // ✅ Drop foreign key if it exists
-                    $table->dropForeign(['lead_id']);
+                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-                    // ✅ Ensure `lead_id` matches `leads.id`
-                    $table->unsignedBigInteger('lead_id')->change();
+                // ✅ Check if the foreign key exists before dropping it
+                $foreignKeys = DB::select("SELECT CONSTRAINT_NAME 
+                    FROM information_schema.KEY_COLUMN_USAGE 
+                    WHERE TABLE_NAME = 'supports' 
+                    AND CONSTRAINT_NAME = 'supports_lead_id_foreign'");
 
-                    // ✅ Re-add foreign key
-                    $table->foreign('lead_id')
-                        ->references('id')
-                        ->on('leads')
-                        ->onDelete('cascade');
-                });
+                if (!empty($foreignKeys)) {
+                    Schema::table('supports', function (Blueprint $table) {
+                        $table->dropForeign(['lead_id']);
+                    });
+                }
+
+                // ✅ Ensure `lead_id` column exists and update its type
+                if (Schema::hasColumn('supports', 'lead_id')) {
+                    Schema::table('supports', function (Blueprint $table) {
+                        $table->unsignedBigInteger('lead_id')->change();
+
+                        // ✅ Re-add foreign key pointing to `leads`
+                        $table->foreign('lead_id')
+                            ->references('id')
+                            ->on('leads')
+                            ->onDelete('cascade');
+                    });
+                }
+
+                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             }
 
             DB::commit();
@@ -55,26 +65,22 @@ return new class extends Migration
     {
         DB::beginTransaction();
         try {
-            // ✅ Ensure `supports` table exists before modifying
             if (Schema::hasTable('supports')) {
-                Schema::table('supports', function (Blueprint $table) {
-                    // ✅ Drop foreign key before rollback
-                    $table->dropForeign(['lead_id']);
+                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-                    // ✅ Restore `lead_id` data type (assuming previous type was `unsignedBigInteger`)
-                    $table->bigInteger('lead_id')->change();
+                // ✅ Check if the foreign key exists before dropping it
+                $foreignKeys = DB::select("SELECT CONSTRAINT_NAME 
+                    FROM information_schema.KEY_COLUMN_USAGE 
+                    WHERE TABLE_NAME = 'supports' 
+                    AND CONSTRAINT_NAME = 'supports_lead_id_foreign'");
 
-                    // ✅ Re-add foreign key pointing back to `customers`
-                    $table->foreign('lead_id')
-                        ->references('id')
-                        ->on('customers')
-                        ->onDelete('cascade');
-                });
-            }
+                if (!empty($foreignKeys)) {
+                    Schema::table('supports', function (Blueprint $table) {
+                        $table->dropForeign(['lead_id']);
+                    });
+                }
 
-            // ✅ Rename `leads` back to `customers`
-            if (Schema::hasTable('leads') && !Schema::hasTable('customers')) {
-                Schema::rename('leads', 'customers');
+                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             }
 
             DB::commit();

@@ -4,59 +4,41 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
-    /**
-     * Show the login form.
-     */
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    /**
-     * Handle the login request.
-     */
     public function login(Request $request)
     {
-        // Validate the input data (username and password)
         $request->validate([
             'username' => ['required'],
             'password' => ['required'],
         ]);
 
-        // Attempt to authenticate the user with username and password
         $credentials = $request->only('username', 'password');
 
-        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
+        if (Auth::attempt($credentials)) {
             $user = Auth::user();
-
-            // Store username in session
+            $request->session()->regenerate(); // Regenerate session for security
             session(['username' => $user->username]);
 
-            // Check if the logged-in user is a superadmin
-            if ($user->role === 'superadmin') {
-                return redirect()->route('dashboard'); // Redirect to the dashboard
-            }
-
-            return redirect()->intended('/home'); // Redirect for non-superadmin users
+            Log::info('User logged in: ' . $user->id . ', redirecting to dashboard');
+            return redirect()->route('dashboard'); // Always redirect to dashboard
         }
 
-        // If authentication fails, return with an error message
         return back()->withErrors(['login' => 'Invalid credentials.']);
     }
 
-    /**
-     * Log out the user.
-     */
     public function logout(Request $request)
     {
-        Auth::logout(); // Log the user out
-
-        // Redirect to the home page after logging out
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect('/');
     }
 }
-
-

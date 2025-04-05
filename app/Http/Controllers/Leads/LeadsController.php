@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Leads; // ✅ Updated namespace
 
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
+use App\Models\LeadHistory;
 use Illuminate\Http\Request;
 use App\Imports\LeadsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class LeadsController extends Controller
 {
@@ -93,7 +95,9 @@ class LeadsController extends Controller
         }
 
         $lead->save(); // ✅ Save the changes
-
+        // save lead history here
+        $addedBy = $this::$commentUser['Admin'];
+        $this->saveLeadHistory($request, $addedBy);
         return response()->json([
             'message' => 'Status updated successfully!',
             'lead_id' => $lead->lead_id,
@@ -167,4 +171,33 @@ class LeadsController extends Controller
 
         return response()->json(['message' => 'Lead deleted successfully']);
     }
+
+    public function saveLeadHistory ($inputs, $addedBy) {
+
+        $leadshistory = LeadHistory::create([
+            'lead_id' => $inputs['lead_id'],
+            'created_by' => $inputs['user_id'],
+            'status' => $inputs['status'],
+            'comment' => $inputs['comment'],
+            'comment_added_by' => $addedBy,
+            'is_deleted' => false,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+        if ($leadshistory) {
+            return true;
+        } 
+        return false;
+    }
+
+    public static $leadStatus = [
+        "Pending" => 0,
+        "Complete" => 1,
+        "New_Lead" => 2
+    ];
+
+    public static $commentUser = [
+        "Admin" => 1,
+        "Customer" => 2
+    ];
 }

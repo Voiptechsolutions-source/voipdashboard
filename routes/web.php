@@ -15,43 +15,34 @@ Route::get('/no-access', function () {
     return view('errors.no-access');
 })->name('no-access');
 
-// Route::middleware(['auth:web'])->group(function () {
-//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-//     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-//     Route::get('/leads', [LeadsController::class, 'index'])->name('leads.index');
-//     Route::get('/import-customers', [LeadImportController::class, 'showImportForm'])->name('import.customers.form');
-//     Route::post('/import-customers', [LeadImportController::class, 'import'])->name('import.customers');
-//     Route::get('/customers', [CustomersController::class, 'index'])->name('converted.leads');
-//     Route::get('/support', [SupportController::class, 'index'])->name('support.index');
-//     Route::post('/support/saverevenue', [SupportController::class, 'store'])->name('support.store');
-
-//     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
-//     Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
-//     Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
-//     Route::post('/roles/{id}/update', [RoleController::class, 'update'])->name('roles.update');
-//     Route::delete('/roles/{id}/delete', [RoleController::class, 'destroy'])->name('roles.destroy');
-//     Route::get('/roles/list', [RoleController::class, 'getRoles'])->name('roles.list');
-//     Route::get('/roles/{id}/permissions', [RoleController::class, 'getPermissions'])->name('roles.permissions.get');
-//     Route::post('/roles/{id}/permissions', [RoleController::class, 'updatePermissions'])->name('roles.permissions.update');
-
-//     Route::prefix('users')->group(function () {
-//         Route::get('/', [UsersController::class, 'index'])->name('users.index');
-//         Route::get('/create', [UsersController::class, 'create'])->name('users.create');
-//         Route::post('/store', [UsersController::class, 'store'])->name('users.store');
-//         Route::get('/edit/{user}', [UsersController::class, 'edit'])->name('users.edit');
-//         Route::post('/update/{user}', [UsersController::class, 'update'])->name('users.update'); // Changed to POST for AJAX
-//         Route::delete('/delete/{user}', [UsersController::class, 'destroy'])->name('users.destroy');
-//     });
-
-// });
 
 Route::middleware(['auth:web'])->group(function () {
+
+    //Dashbaord contoller
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('permission:dashboard')->name('dashboard');
+    Route::get('/dashboard/filter', [DashboardController::class, 'filter']);
+    Route::get('/dashboard/chart-data', [DashboardController::class, 'getChartData']);
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+        // Existing index route
     Route::get('/leads', [LeadsController::class, 'index'])->middleware('permission:leads')->name('leads.index');
+
+    // New show route for fetching a single lead
+    Route::get('/leads/{lead}', [LeadsController::class, 'show'])->middleware('permission:leads')->name('leads.show');
+
     Route::get('/import-customers', [LeadImportController::class, 'showImportForm'])->middleware('permission:import-customers')->name('import.customers.form');
+
+    Route::post('/update-status/{lead}', [LeadsController::class, 'updateStatus'])->middleware('permission:leads')->name('leads.update.status');
+
+    Route::delete('/leads/{lead}', [LeadsController::class, 'destroy'])->middleware('permission:leads')->name('leads.destroy');
+
+    // Route::post('/convert-lead', [LeadsController::class, 'convertLead'])->middleware('permission:leads')->name('leads.convert');
+
+    Route::get('/leads/{lead}/edit', [LeadsController::class, 'edit'])->middleware('permission:leads')->name('leads.edit');
+
+    Route::put('/leads/{lead}', [LeadsController::class, 'update'])->middleware('permission:leads')->name('leads.update');
+
     Route::post('/import-customers', [LeadImportController::class, 'import'])->middleware('permission:import-customers')->name('import.customers');
     Route::get('/customers', [CustomersController::class, 'index'])->middleware('permission:customers')->name('converted.leads');
     Route::get('/support', [SupportController::class, 'index'])->middleware('permission:support')->name('support.index');

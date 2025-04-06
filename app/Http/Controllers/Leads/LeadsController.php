@@ -58,7 +58,12 @@ class LeadsController extends Controller
     public function show($id)
     {
         $lead = Lead::findOrFail($id);
-        return response()->json($lead);
+        // Return JSON response for AJAX
+        return response()->json([
+            'id' => $lead->id,
+            'description' => $lead->description,
+            'status' => $lead->status,
+        ]);
     }
 
     // Fetch lead data for editing

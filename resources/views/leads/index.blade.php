@@ -206,8 +206,8 @@
                                 <label>Status</label>
                                 <select class="form-control" id="editStatus" name="status">
                                     <option value="0">Pending</option>
-                                    <option value="1">Approved</option>
-                                    <option value="2">Rejected</option>
+                                    <option value="1">Complete</option>
+                                    <option value="2">New Lead</option>
                                 </select>
                             </div>
                             <div class="form-group">

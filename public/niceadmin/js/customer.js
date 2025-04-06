@@ -247,6 +247,7 @@ $(document).ready(function() {
         url: '/leads/' + rowId + '/edit',
         type: 'GET',
         success: function(response) {
+            console.log(response);
             $('#editCustomerId').val(response.id);
             $('#editFullName').val(response.full_name);
             $('#editEmail').val(response.email);

@@ -59,25 +59,25 @@
         </li>
       @endif
 
-      <!-- Roles -->
-      @if($isSuperAdmin || ($permissions->has('Roles') && $permissions['Roles']->can_view))
-        <li class="nav-item">
+      {{-- Roles (Commented Out) --}}
+      {{-- @if($isSuperAdmin || ($permissions->has('Roles') && $permissions['Roles']->can_view))
+        <!-- <li class="nav-item">
           <a class="nav-link" href="{{ route('roles.index') }}">
             <i class="bi bi-shield-lock"></i>
             <span>Roles</span>
           </a>
-        </li>
-      @endif
+        </li> -->
+      @endif --}}
 
-      <!-- Users -->
-      @if($isSuperAdmin || ($permissions->has('users') && $permissions['users']->can_view))
-        <li class="nav-item">
+      {{-- Users (Commented Out) --}}
+      {{-- @if($isSuperAdmin || ($permissions->has('users') && $permissions['users']->can_view))
+        <!-- <li class="nav-item">
           <a class="nav-link" href="{{ route('users.index') }}">
             <i class="bi bi-person-circle"></i>
             <span>Users</span>
           </a>
-        </li>
-      @endif
+        </li> -->
+      @endif --}}
     @endauth
   </ul>
 </aside><!-- End Sidebar -->

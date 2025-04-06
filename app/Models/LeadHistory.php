@@ -15,13 +15,14 @@ class LeadHistory extends Model
     protected $table = 'leads_history'; // Updated table name
 
     protected $fillable = [
-        'full_name', 'email', 'country_code', 'contact_no', 'address', 'pincode', 'industry', 'service_type', 'service_name', 'number_of_users', 
-        'message', 'comment', 'description', 'customer_description', 
-        'lead_id', 'campaign_id', 'form_id', 'source', 'status', 
-        'convertedlead', 'raw_data' // ✅ Include created_at if filtering by date
+        'new_status', 'new_comment', 'old_status', 'old_comment', 'lead_id', 'log_change_type', 
+        'edit_by', 'edit_user_type','is_deleted','created_at', 'updated_at' // ✅ Include created_at if filtering by date
     ];
 
-    protected $casts = [
-        'raw_data' => 'array', // Ensures raw_data is treated as an array
-    ];
+
+    // Relationship: Each Support entry belongs to a Lead
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class, 'lead_id');
+    }
 }

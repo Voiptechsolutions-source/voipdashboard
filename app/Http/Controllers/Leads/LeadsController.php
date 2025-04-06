@@ -84,7 +84,12 @@ class LeadsController extends Controller
 
         // ✅ Find the lead (returns 404 if not found)
         $lead = Lead::findOrFail($id);
-
+        $oldStatus = isset($lead->status) ? $lead->status : '';
+        $oldDesc = isset($lead->description) ? $lead->description : '';
+        $logType = $this->logChangeType['comment'];
+        if ($oldStatus !== $request->status) {
+            $logType = $this->logChangeType['status'];
+        }
         // ✅ Update the lead details
         $lead->status = $request->status;
         $lead->description = $request->description;
@@ -96,8 +101,8 @@ class LeadsController extends Controller
 
         $lead->save(); // ✅ Save the changes
         // save lead history here
-        $addedBy = $this::$commentUser['Admin'];
-        $this->saveLeadHistory($request, $addedBy);
+        $addedBy = $this->commentUser['Admin'];
+        $this->saveLeadHistory($request, $oldStatus, $oldDesc, $logType, $addedBy);
         return response()->json([
             'message' => 'Status updated successfully!',
             'lead_id' => $lead->lead_id,
@@ -172,14 +177,16 @@ class LeadsController extends Controller
         return response()->json(['message' => 'Lead deleted successfully']);
     }
 
-    public function saveLeadHistory ($inputs, $addedBy) {
-
+    public function saveLeadHistory ($inputs, $oldStatus, $oldComment, $logType, $addedBy) {
         $leadshistory = LeadHistory::create([
+            'new_status' => $inputs['status'],
+            'new_comment' => $inputs['description'],
+            'old_status' => $oldStatus,
+            'old_comment' => $oldComment,
             'lead_id' => $inputs['lead_id'],
-            'created_by' => $inputs['user_id'],
-            'status' => $inputs['status'],
-            'comment' => $inputs['comment'],
-            'comment_added_by' => $addedBy,
+            'log_change_type' => $logType,
+            'edit_by' => $inputs['user_id'],
+            'edit_user_type' => $addedBy,
             'is_deleted' => false,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
@@ -199,5 +206,10 @@ class LeadsController extends Controller
     public static $commentUser = [
         "Admin" => 1,
         "Customer" => 2
+    ];
+
+    public static $logChangeType = [
+        "status" => 1,
+        "comment" => 2
     ];
 }

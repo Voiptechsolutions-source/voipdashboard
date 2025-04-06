@@ -2,6 +2,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Leads\LeadsController;
+use App\Http\Controllers\Leads\LeadsHistoryController;
 use App\Http\Controllers\Leads\LeadImportController;
 use App\Http\Controllers\Customers\CustomersController;
 use App\Http\Controllers\Customers\SupportController;
@@ -51,6 +52,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/leads', [LeadsController::class, 'index'])->middleware('permission:leads')->name('leads.index');
+    Route::get('/leads-history/{id}', [LeadsHistoryController::class, 'index'])->middleware('permission:leads')->name('leadshistory.index');
     Route::get('/import-customers', [LeadImportController::class, 'showImportForm'])->middleware('permission:import-customers')->name('import.customers.form');
     Route::post('/import-customers', [LeadImportController::class, 'import'])->middleware('permission:import-customers')->name('import.customers');
     Route::get('/customers', [CustomersController::class, 'index'])->middleware('permission:customers')->name('converted.leads');

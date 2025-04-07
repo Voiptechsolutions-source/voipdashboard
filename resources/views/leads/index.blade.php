@@ -122,7 +122,7 @@
           
           <!-- Description in read-only text area -->
           <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
+            <label for="description" class="form-label">Description/Comment</label>
             <textarea class="form-control" id="description" name="description" rows="3"></textarea>
           </div>
 

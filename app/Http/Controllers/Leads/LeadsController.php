@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Leads; // ✅ Updated namespace
 
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
+use App\Models\LeadHistory;
 use Illuminate\Http\Request;
 use App\Imports\LeadsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
+use App\Constants\CommonParam;
 
 class LeadsController extends Controller
 {
@@ -56,13 +59,22 @@ class LeadsController extends Controller
 
     // ✅ Show single lead
     public function show($id)
-    {
+    {  
         $lead = Lead::findOrFail($id);
+        $leadshistory = LeadHistory::join('leads', 'leads_history.lead_id', '=', 'leads.id')
+        ->select(
+            'leads_history.*', 
+            'leads.full_name'
+        )
+        ->where('leads_history.lead_id', $id)
+        ->orderBy('created_at', 'desc')
+        ->get();
         // Return JSON response for AJAX
         return response()->json([
             'id' => $lead->id,
             'description' => $lead->description,
             'status' => $lead->status,
+            'leads_history' => $leadshistory
         ]);
     }
 
@@ -87,7 +99,6 @@ class LeadsController extends Controller
 
         // ✅ Find the lead (returns 404 if not found)
         $lead = Lead::findOrFail($id);
-
         // ✅ Update the lead details
         $lead->status = $request->status;
         $lead->description = $request->description;
@@ -98,7 +109,10 @@ class LeadsController extends Controller
         }
 
         $lead->save(); // ✅ Save the changes
-
+        // save lead history here
+        $userDetail = $this->getCurrentUserDetails();   
+        $addedBy = $userDetail->username;
+        $this->saveLeadHistory($request, $addedBy);
         return response()->json([
             'message' => 'Status updated successfully!',
             'lead_id' => $lead->lead_id,
@@ -172,4 +186,32 @@ class LeadsController extends Controller
 
         return response()->json(['message' => 'Lead deleted successfully']);
     }
+
+    /**
+     * Function saveLeadHistory
+     *  used for save history of lead update status and comment
+     * @author Raj <rahulsisodia82@gmail.com>
+     * @param  array $inputs
+     *  array inputs
+     * @param string $addedBy
+     *  login user name     
+     * @return bool
+     */
+
+    public function saveLeadHistory ($inputs, $addedBy) {
+        $leadshistory = LeadHistory::create([
+            'status' => $inputs['status'],
+            'comment' => $inputs['description'],
+            'lead_id' => $inputs['id'],
+            'added_by' => $addedBy,
+            'is_deleted' => false,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+        if ($leadshistory) {
+            return true;
+        } 
+        return false;
+    }
+    
 }

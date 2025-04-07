@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+
+
 <div class="container">
     <div class="pagetitle">
-        <h1>Customers List</h1>
+        <h1>{{ $isSuperAdmin ? 'Leads' : 'My Assigned Leads' }}</h1>
     </div>
     <section class="section">
     <div class="row">
@@ -65,9 +67,8 @@
                 <th>Source</th>
                 <th>Service</th>
                 <th>Service Type</th>
-                <th>View</th>  <!-- New Column -->
-                <th>Edit</th>  
-                <th>Delete</th>
+                <th>Assigned to</th>
+                <th>Actions</th> <!-- Single Actions column -->
             </tr>
         </thead>
     </table>
@@ -224,6 +225,36 @@
     </div>
 </div>
 
+<!----assign modal--->
+
+<div class="modal fade" id="assignLeadModal" tabindex="-1" aria-labelledby="assignLeadModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="assignLeadModalLabel">Assign Lead</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="assignLeadForm">
+                            <input type="hidden" id="assignLeadId" name="lead_id">
+                            <div class="mb-3">
+                                <label for="assignUser" class="form-label">Assign to User</label>
+                                <select class="form-select" id="assignUser" name="user_id" required>
+                                    <option value="">Select a User</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Assign</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+    </div>
+
 </div>
 </div>
 </div>
@@ -231,5 +262,12 @@
 </div>
     </section>
 </div>
-
+<!-- Pass permissions to JavaScript -->
+<script>
+   
+    window.canView = {{ $canView ? 'true' : 'false' }};
+    window.canEdit = {{ $canEdit ? 'true' : 'false' }};
+    window.canDelete = {{ $canDelete ? 'true' : 'false' }};
+   window.isSuperAdmin = {{ $isSuperAdmin ? 'true' : 'false' }};
+</script>
 @endsection

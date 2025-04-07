@@ -14,6 +14,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // $user = $this->getCurrentUserDetails();
+        // print_r($user);
         return $this->fetchData('today', false); // Load the view
     }
 

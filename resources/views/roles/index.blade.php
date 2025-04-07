@@ -31,14 +31,14 @@
                   <tr>
                     <td class="lead">{{ $role->name }}</td>
                     <td class="lead">
-                      @foreach($role->permissions as $permission)
+                     <!--  @foreach($role->permissions as $permission)
                         <span class="badge bg-primary">
                           {{ $permission->page_name }}
                           ({{ $permission->pivot->can_view ? 'View' : '' }}
                           {{ $permission->pivot->can_edit ? 'Edit' : '' }}
                           {{ $permission->pivot->can_delete ? 'Delete' : '' }})
                         </span>
-                      @endforeach
+                      @endforeach -->
                       <button class="btn btn-sm btn-info lead managePermissionsBtn"
                               data-id="{{ $role->id }}"
                               data-permissions="{{ json_encode($role->permissions->pluck('id')->toArray()) }}">

@@ -8,6 +8,8 @@ use App\Models\Role;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Log;
 
 class UsersController extends Controller
 {
@@ -74,6 +76,28 @@ class UsersController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    }
+    // New Methods for Profile Editing (All Users)
+    public function editProfile()
+    {
+        $user = Auth::user();
+        return view('users.profile', compact('user')); // New view for profile editing
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        Log::info('User ' . $user->id . ' updated their password.');
+        return redirect()->route('dashboard')->with('success', 'Password updated successfully!');
     }
 
     

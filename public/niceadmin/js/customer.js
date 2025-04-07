@@ -5,25 +5,51 @@ $(document).ready(function() {
         serverSide: true,
         ajax: leadsIndexUrl,
         columns: [
-        { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-        { data: 'id', name: 'id' },
-        { data: 'created_at', name: 'created_at' },
-        { data: 'full_name', name: 'full_name' },
-        { data: 'email', name: 'email' },
-        { data: 'country_code', name: 'country_code' },
-        { data: 'contact_no', name: 'contact_no' },
-        { data: 'status', name: 'status' },
-        { data: 'source', name: 'source' },
-        { data: 'service_name', name: 'service_name' },
-        { data: 'service_type', name: 'service_type' },
-        //{ data: 'ConvertLead', name: 'action', orderable: false, searchable: false},
-        { data: 'view', name: 'view', orderable: false, searchable: false},
-        { data: 'Edit', name: 'view', orderable: false, searchable: false},
-        { data: 'Delete', name: 'view', orderable: false, searchable: false},  // New column
-    ],
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'id', name: 'id' },
+            { data: 'created_at', name: 'created_at' },
+            { data: 'full_name', name: 'full_name' },
+            { data: 'email', name: 'email' },
+            { data: 'country_code', name: 'country_code' },
+            { data: 'contact_no', name: 'contact_no' },
+            { data: 'status', name: 'status' },
+            { data: 'source', name: 'source' },
+            { data: 'service_name', name: 'service_name' },
+            { data: 'service_type', name: 'service_type' },
+            { data: 'assigned_to', name: 'assigned_to', visible: false },
+            {
+                data: null, // Use null since we're rendering dynamically
+                name: 'actions',
+                orderable: false,
+                searchable: false,
+                render: function(data, type,row) {
+                    //var assignedTo = $(data).data('assigned-to'); // Access data-assigned-to from actions
+                    var actions = '<div class="btn-group" role="group">';
+                    if (window.canView) {
+                        actions += '<button class="btn btn-info btn-sm view-details" data-id="' + row.id + '">View</button>';
+                    }
+                    if (window.canEdit) {
+                        actions += '<button class="btn btn-warning btn-sm edit-lead" data-id="' + row.id + '">Edit</button>';
+                    }
+                    if (window.canDelete) {
+                        actions += '<button class="btn btn-danger btn-sm delete-row" data-id="' + row.id + '">Delete</button>';
+                    }
+                    if (window.isSuperAdmin) {
+                        if (row.assigned_to) {
+                            actions += '<button class="btn btn-secondary btn-sm assign-lead disabled" data-id="' + row.id + '">Assigned</button>';
+                        } else {
+                            actions += '<button class="btn btn-primary btn-sm assign-lead" data-id="' + row.id + '">Assign</button>';
+                        }
+                    }
+                    actions += '</div>';
+                    return actions || 'No actions available';
+                }
+            
+            },
+        ],
         order: [[1, 'desc']],
         paging: true,
-        lengthMenu: [100,200,300,400],
+        lengthMenu: [100, 200, 300, 400],
         pageLength: 100,
         dom: 'lBfrtip',
         buttons: [
@@ -101,7 +127,49 @@ $(document).ready(function() {
         });
     });
 
+    // Assign Lead Button Click
+    $(document).on('click', '.assign-lead:not(.disabled)', function() {
+        var leadId = $(this).data('id');
+        $('#assignLeadId').val(leadId);
 
+        $.ajax({
+            url: '/users/sales-admins',
+            type: 'GET',
+            success: function(response) {
+                var select = $('#assignUser');
+                select.empty().append('<option value="">Select a User</option>');
+                response.users.forEach(function(user) {
+                    select.append('<option value="' + user.id + '">' + user.username + ' (' + user.role_name + ')</option>');
+                });
+                $('#assignLeadModal').modal('show');
+            },
+            error: function() {
+                alert('Failed to fetch users.');
+            }
+        });
+    });
+
+    // Handle Assign Lead Form Submission
+    $('#assignLeadForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: '/leads/assign',
+            type: 'POST',
+            data: formData,
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(response) {
+                alert(response.message);
+                $('#assignLeadModal').modal('hide');
+                table.ajax.reload(); // Full reload
+                table.draw(); // Redraw table
+            },
+            error: function(xhr) {
+                alert('Error: ' + (xhr.responseJSON?.message || 'Failed to assign lead'));
+            }
+        });
+    });
 
     //Status Modal
     $(document).on('click', '.update-status', function() {

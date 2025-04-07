@@ -10,14 +10,14 @@
       @endphp
 
       <!-- Dashboard -->
-      @if($isSuperAdmin || ($permissions->has('dashboard') && $permissions['dashboard']->can_view))
+      
         <li class="nav-item">
           <a class="nav-link" href="{{ route('dashboard') }}">
             <i class="bi bi-house-door"></i>
             <span>Dashboard</span>
           </a>
         </li>
-      @endif
+      
 
       <!-- Leads -->
       @if($isSuperAdmin || ($permissions->has('leads') && $permissions['leads']->can_view))
@@ -59,25 +59,25 @@
         </li>
       @endif
 
-      {{-- Roles (Commented Out) --}}
-      {{-- @if($isSuperAdmin || ($permissions->has('Roles') && $permissions['Roles']->can_view))
-        <!-- <li class="nav-item">
+      {{-- Roles --}}
+      @if($isSuperAdmin || ($permissions->has('Roles') && $permissions['Roles']->can_view))
+        <li class="nav-item">
           <a class="nav-link" href="{{ route('roles.index') }}">
             <i class="bi bi-shield-lock"></i>
             <span>Roles</span>
           </a>
-        </li> -->
-      @endif --}}
+        </li>
+      @endif
 
-      {{-- Users (Commented Out) --}}
-      {{-- @if($isSuperAdmin || ($permissions->has('users') && $permissions['users']->can_view))
-        <!-- <li class="nav-item">
+      {{-- Users--}}
+      @if($isSuperAdmin || ($permissions->has('users') && $permissions['users']->can_view))
+        <li class="nav-item">
           <a class="nav-link" href="{{ route('users.index') }}">
             <i class="bi bi-person-circle"></i>
             <span>Users</span>
           </a>
-        </li> -->
-      @endif --}}
+        </li>
+      @endif
     @endauth
   </ul>
 </aside><!-- End Sidebar -->

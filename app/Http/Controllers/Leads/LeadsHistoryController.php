@@ -13,8 +13,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
+
+/**
+ * Class LeadsHistoryController
+ *    Controls the Leads History flow.
+ */
+
 class LeadsHistoryController extends Controller
 {
+
+    /**
+     * Function index
+     *  used for getting leads history on the basis of lead id
+     * @author Raj <rahulsisodia82@gmail.com>
+     * @param  string $id
+     *  lead id     
+     * @return array
+     */
+
     public function index($id)
     {
         $leadshistory = LeadHistory::join('leads', 'leads_history.lead_id', '=', 'leads.id')

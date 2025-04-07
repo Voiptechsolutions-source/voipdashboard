@@ -15,8 +15,7 @@ class LeadHistory extends Model
     protected $table = 'leads_history'; // Updated table name
 
     protected $fillable = [
-        'new_status', 'new_comment', 'old_status', 'old_comment', 'lead_id', 'log_change_type', 
-        'edit_by', 'edit_user_type','is_deleted','created_at', 'updated_at' // ✅ Include created_at if filtering by date
+        'status', 'comment', 'lead_id', 'added_by','is_deleted','created_at', 'updated_at' // ✅ Include created_at if filtering by date
     ];
 
 

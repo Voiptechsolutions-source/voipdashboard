@@ -101,8 +101,8 @@ class LeadsController extends Controller
 
         $lead->save(); // ✅ Save the changes
         // save lead history here
-        $addedBy = $this->commentUser['Admin'];
-        $this->saveLeadHistory($request, $oldStatus, $oldDesc, $logType, $addedBy);
+        $addedBy = 'user_name';
+        $this->saveLeadHistory($request, $addedBy);
         return response()->json([
             'message' => 'Status updated successfully!',
             'lead_id' => $lead->lead_id,
@@ -177,16 +177,29 @@ class LeadsController extends Controller
         return response()->json(['message' => 'Lead deleted successfully']);
     }
 
-    public function saveLeadHistory ($inputs, $oldStatus, $oldComment, $logType, $addedBy) {
+    /**
+     * Function saveLeadHistory
+     *  used for save history of lead update status and comment
+     * @author Raj <rahulsisodia82@gmail.com>
+     * @param  array $inputs
+     *  array inputs
+     * @param int $oldStatus
+     *  old lead status
+     * @param string $oldComment
+     *  old lead desciption
+     * @param int $logtype
+     *  type of log
+     * @param int $addedBy
+     *  type of user      
+     * @return bool
+     */
+
+    public function saveLeadHistory ($inputs, $addedBy) {
         $leadshistory = LeadHistory::create([
-            'new_status' => $inputs['status'],
-            'new_comment' => $inputs['description'],
-            'old_status' => $oldStatus,
-            'old_comment' => $oldComment,
+            'status' => $inputs['status'],
+            'comment' => $inputs['description'],
             'lead_id' => $inputs['lead_id'],
-            'log_change_type' => $logType,
-            'edit_by' => $inputs['user_id'],
-            'edit_user_type' => $addedBy,
+            'added_by' => $addedBy,
             'is_deleted' => false,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
@@ -202,14 +215,5 @@ class LeadsController extends Controller
         "Complete" => 1,
         "New_Lead" => 2
     ];
-
-    public static $commentUser = [
-        "Admin" => 1,
-        "Customer" => 2
-    ];
-
-    public static $logChangeType = [
-        "status" => 1,
-        "comment" => 2
-    ];
+    
 }

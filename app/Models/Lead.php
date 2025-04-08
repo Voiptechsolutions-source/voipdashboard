@@ -10,7 +10,7 @@ class Lead extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $table = 'leads'; // Updated table name
 
@@ -24,4 +24,9 @@ class Lead extends Model
     protected $casts = [
         'raw_data' => 'array', // Ensures raw_data is treated as an array
     ];
+
+    public function assignedTo()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
 }

@@ -91,6 +91,9 @@ class LeadsController extends Controller
                 ->addColumn('assigned_to', function ($row) {
                     return $row->assigned_to; // Ensure this is included
                  })
+                ->addColumn('assigned_username', function ($row) {
+                    return $row->assignedTo ? $row->assignedTo->username : null; // Username
+                })
                 ->addColumn('actions', function ($row) {
                     return '<div class="btn-group" role="group" aria-label="Actions" data-assigned-to="' . $row->assigned_to . '"></div>';
                 })
@@ -188,19 +191,27 @@ class LeadsController extends Controller
     // ✅ Update Lead Status
     public function updateStatus(Request $request, $id)
     {
-        // ✅ Validate the input
+        // Debug specific inputs instead of the whole request
+        \Log::info('Update Status Request Data:', [
+            'id' => $id,
+            'status' => $request->input('status'),
+            'description' => $request->input('description'),
+        ]);
+
+        // Validate the input
         $request->validate([
             'status' => 'required|in:0,1,2', // Ensure valid status values
             'description' => 'nullable|string|max:255',
         ]);
 
-        // ✅ Find the lead (returns 404 if not found)
+        // Find the lead (returns 404 if not found)
         $lead = Lead::findOrFail($id);
-        // ✅ Update the lead details
+
+        // Update the lead details
         $lead->status = $request->status;
         $lead->description = $request->description;
 
-        // ✅ If status is "Complete" (1), set lead_id = id
+        // If status is "Complete" (1), set lead_id = id
         if ($request->status == "1") {
             $lead->lead_id = $id;
         }
@@ -254,7 +265,13 @@ class LeadsController extends Controller
         $lead->message = $request->message;
         $lead->comment = $request->comment;
         $lead->status = $request->status;
-        $lead->updated_at = now();
+        $lead->source = $request->source;
+        $lead->customer_description = $request->customer_description;
+        $lead->description = $request->description;
+        $lead->campaign_id = $request->campaign_id;
+        $lead->form_id = $request->form_id;
+        $lead->industry = $request->industry;
+        
 
         $lead->save();
 

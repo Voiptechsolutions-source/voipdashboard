@@ -174,7 +174,7 @@ $(document).ready(function() {
     //Status Modal
     $(document).on('click', '.update-status', function() {
         var customerId = $(this).data('id');
-
+        $('#leads-history-section').hide();
         $.ajax({
             url: "/leads/" + customerId,  // Fetch customer details
             type: "GET",
@@ -196,6 +196,11 @@ $(document).ready(function() {
                 }
 
                 $('#statusModal').modal('show');  // Show modal
+                response = data.leads_history;
+                if (Array.isArray(response) && response.length > 0) {
+                    $('#leads-history-section').show();
+                    populateTable(response);
+                }
             },
             error: function() {
                 alert("Failed to fetch customer details.");
@@ -419,6 +424,40 @@ $('#editCustomerForm').on('submit', function(e) {
             }
         });
     });
+
+    function populateTable(dataArray) {
+        const tableBody = $('#leadshistoryTable tbody');
+        tableBody.empty(); // Clear existing rows
+    
+        dataArray.forEach(row => {
+            let htmlRow = '<tr>';
+            for (const key in row) {
+                if (key == 'status' || key == 'comment' || key == 'added_by' || key == 'created_at') {
+                    if (key == 'status') {
+                        if (row[key] == 0) {
+                            htmlRow += `<td>Pending</td>`;
+                        } else if(row[key] == 1) {
+                            htmlRow += `<td>Complete</td>`;
+                        } else {
+                            htmlRow += `<td>New Lead</td>`;
+                        }  
+                    } else if (key == 'created_at') {
+                        let [datePart, timePart] = row[key].split(" ");
+                        let date = new Date(row[key]);
+                        let formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth()+1).padStart(2, '0')}-${date.getFullYear()}`;
+                        combineDateTime = `${formattedDate} ${timePart}`; 
+                        htmlRow += `<td>${combineDateTime}</td>`;
+                    } else {
+                        htmlRow += `<td>${row[key]}</td>`;
+                    }
+                }
+            }
+            htmlRow += '</tr>';
+            tableBody.append(htmlRow);
+        });
+    }
+    
+
 
     
 

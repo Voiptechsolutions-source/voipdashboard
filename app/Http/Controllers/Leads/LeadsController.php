@@ -131,6 +131,15 @@ class LeadsController extends Controller
     public function viewfulldetails($id)
     {
         $lead = Lead::findOrFail($id);
+        $leadshistory = LeadHistory::join('leads', 'leads_history.lead_id', '=', 'leads.id')
+        ->select(
+            'leads_history.*', 
+            'leads.full_name'
+        )
+        ->where('leads_history.lead_id', $id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+        $lead['leads_history'] = $leadshistory;
         return response()->json($lead); // Return the full lead object
     }
 

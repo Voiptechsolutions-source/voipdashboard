@@ -106,7 +106,7 @@
 <!---- status Modal --->
 <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content style="width: 122%;">
       <div class="modal-header">
         <h5 class="modal-title" id="statusModalLabel">Update Status</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -121,6 +121,36 @@
             <label id="data" class="form-control"></label>
           </div>
           
+          <!-- Lead History -->
+        <div id="leads-history-section" style="display: none;">
+            <div class="pagetitle">
+                <h5>Lead History</h5>
+            </div>
+            <section class="section" style="height: 500px; overflow-y: auto;">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive1">
+                                    <table id="leadshistoryTable" class="table table-striped">
+                                    <thead>
+                                            <tr style="position: sticky;top: 0;">
+                                                <th>Status</th>
+                                                <th>Description/Comment</th>
+                                                <th>Added By</th>
+                                                <th>Added At</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
           <!-- Description in read-only text area -->
           <div class="mb-3">
             <label for="description" class="form-label">Description/Comment</label>

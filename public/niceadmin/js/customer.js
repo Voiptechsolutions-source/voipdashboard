@@ -3,7 +3,7 @@ $(document).ready(function() {
     $('#customerTable').DataTable({
         processing: true,
         serverSide: true,
-        ajax: customersIndexUrl,
+        ajax: leadsIndexUrl,
         columns: [
         { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
         { data: 'id', name: 'id' },
@@ -51,21 +51,18 @@ $(document).ready(function() {
         table.column(4).search(this.value).draw();
     });
 
-    // Filter by Status (Column Index 13)
+    // 🔥 Fix for Status Filtering (Column Index 7)
     $('#statusFilter').on('change', function () {
-        var status = this.value;
-        if (status) {
-            table.column(13).search(status).draw();
-        } else {
-            table.column(13).search("").draw();
-        }
+        var status = $(this).val(); 
+        console.log("Filtering by Status:", status);
+        table.column(7).search(status).draw();
     });
     //Full Detail Modal
     $(document).on('click', '.view-details', function() {
         var customerId = $(this).data('id');
 
         $.ajax({
-            url: "/customers/" + customerId,  // Route to fetch customer details
+            url: "/leads/" + customerId,  // Route to fetch customer details
             type: "GET",
             success: function(data) {
                 console.log(data);
@@ -111,14 +108,24 @@ $(document).ready(function() {
         var customerId = $(this).data('id');
 
         $.ajax({
-            url: "/customers/" + customerId,  // Fetch customer details
+            url: "/leads/" + customerId,  // Fetch customer details
             type: "GET",
             success: function(data) {
-                console.log(data);
+                console.log("Fetched Data:", data);
+
                 $('#rowId').val(data.id);  // Set hidden input ID
                 $('#data').text(data.id);  // Show Row ID
                 $('#description').val(data.description); // Set description
-                $('#status').val(data.status);  // Set selected status
+
+                // ✅ Correctly select the status in the dropdown
+                $('#status').val(data.status).trigger('change');
+
+                // ✅ Disable status dropdown if status is "Complete" (1), otherwise enable it
+                if (data.status == "1") {
+                    $('#status').prop('disabled', true);
+                } else {
+                    $('#status').prop('disabled', false);
+                }
 
                 $('#statusModal').modal('show');  // Show modal
             },
@@ -127,6 +134,8 @@ $(document).ready(function() {
             }
         });
     });
+
+
 
 
     // Handle form submission to update status
@@ -149,41 +158,21 @@ $(document).ready(function() {
                 console.log("Status Update Response:", response);
                 alert(response.message);
 
+                // ✅ Update button text & color
+                let statusButton = $('.update-status[data-id="' + customerId + '"]');
                 if (newStatus === "1") {
-                    // ✅ Prevent users from changing back to Pending
-                    console.log("Triggering Lead Conversion for:", customerId);
-                    $.ajax({
-                        url: '/convert-lead',
-                        type: 'POST',
-                        data: { lead_id: customerId },
-                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                        success: function (convertResponse) {
-                            console.log("Lead Conversion Response:", convertResponse);
-                            alert("Lead converted successfully!");
-
-                            setTimeout(function () {
-                                $('#status').val("1").trigger('change');
-                            }, 500);
-
-                            $('.update-status[data-id="' + customerId + '"]').text("Complete")
-                                .removeClass('btn-warning').addClass('btn-success');
-
-                            $('#status').prop('disabled', true); // ✅ Disable dropdown
-
-                            $('#statusModal').modal('hide');
-                        },
-                        error: function (xhr) {
-                            console.log("Lead Conversion Error:", xhr);
-                            alert("Error converting lead: " + (xhr.responseJSON?.message || "Unknown error"));
-                        }
-                    });
-
+                    statusButton.text("Complete").removeClass('btn-danger btn-warning').addClass('btn-success');
+                    $('#status').prop('disabled', true); // ✅ Disable dropdown for "Complete"
+                } else if (newStatus === "2") {
+                    statusButton.text("New Lead").removeClass('btn-danger btn-success').addClass('btn-warning');
+                    $('#status').prop('disabled', false); // ✅ Enable dropdown
                 } else {
-                    // ❌ Prevent deletion if status is already "Complete"
-                    console.log("Lead status change blocked. Once converted, it cannot be reverted to Pending.");
-                    alert("You cannot change a Completed lead back to Pending.");
-                    $('#status').val("1").trigger('change'); // Reset back to "Complete"
+                    statusButton.text("Pending").removeClass('btn-success btn-warning').addClass('btn-danger');
+                    $('#status').prop('disabled', false); // ✅ Enable dropdown
                 }
+
+                $('#statusModal').modal('hide'); // ✅ Close modal after update
+                $('#customerTable').DataTable().ajax.reload(null, false); // ✅ Reload DataTable without full refresh
             },
             error: function (xhr) {
                 console.log("Status Update Error:", xhr);
@@ -206,7 +195,7 @@ $(document).ready(function() {
 
         if (confirm("Are you sure you want to delete this entry?")) {
             $.ajax({
-                url: '/customers/' + rowId,
+                url: '/leads/' + rowId,
                 type: 'DELETE',
                 xhrFields: { withCredentials: true },
                 headers: {
@@ -255,9 +244,10 @@ $(document).ready(function() {
     let rowId = $(this).data('id');
 
     $.ajax({
-        url: '/customers/' + rowId + '/edit',
+        url: '/leads/' + rowId + '/edit',
         type: 'GET',
         success: function(response) {
+            console.log(response);
             $('#editCustomerId').val(response.id);
             $('#editFullName').val(response.full_name);
             $('#editEmail').val(response.email);
@@ -287,7 +277,7 @@ $('#editCustomerForm').on('submit', function(e) {
     let rowId = $('#editCustomerId').val();
     
     $.ajax({
-        url: '/customers/' + rowId,
+        url: '/leads/' + rowId,
         type: 'PUT',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -311,7 +301,7 @@ $('#editCustomerForm').on('submit', function(e) {
     let rowId = $('#editCustomerId').val();
     
     $.ajax({
-        url: '/customers/' + rowId,
+        url: '/leads/' + rowId,
         type: 'PUT',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

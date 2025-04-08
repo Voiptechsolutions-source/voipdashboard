@@ -33,7 +33,7 @@
     <script src="{{ asset('niceadmin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('niceadmin/js/main.js') }}"></script>
     <script>
-        var customersIndexUrl = "{{ route('customers.index') }}"; // Pass the correct route
+        var leadsIndexUrl = "{{ route('leads.index') }}"; // Pass the correct route
     </script>
     <script src="{{ asset('niceadmin/js/customer.js') }}"></script>  
 

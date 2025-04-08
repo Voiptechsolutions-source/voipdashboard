@@ -18,9 +18,10 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
+        'role_id',
     ];
 
     /**
@@ -45,5 +46,25 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * A user belongs to one role.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    /**
+     * Get all permissions through the user's role (optional helper).
+     */
+    public function permissions()
+    {
+        return $this->role ? $this->role->permissions() : collect();
+    }
     
+    public function isSuperAdmin()
+    {
+        return $this->role && strtolower($this->role->name) === 'superadmin';
+    }
 }

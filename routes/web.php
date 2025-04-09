@@ -2,6 +2,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Leads\LeadsController;
+use App\Http\Controllers\Leads\LeadsHistoryController;
 use App\Http\Controllers\Leads\LeadImportController;
 use App\Http\Controllers\Customers\CustomersController;
 use App\Http\Controllers\Customers\SupportController;
@@ -40,6 +41,7 @@ Route::middleware(['auth:web'])->group(function () {
 
     Route::get('/leadstatus/{lead}', [LeadsController::class, 'show'])->middleware('permission:leads')->name('leads.show');
 
+    Route::get('/leads-history/{id}', [LeadsHistoryController::class, 'index'])->middleware('permission:leads')->name('leadshistory.index');
     Route::get('/import-customers', [LeadImportController::class, 'showImportForm'])->middleware('permission:import-customers')->name('import.customers.form');
 
     Route::post('/update-status/{lead}', [LeadsController::class, 'updateStatus'])->middleware('permission:leads')->name('leads.update.status');

@@ -337,15 +337,48 @@
    window.isSuperAdmin = {{ $isSuperAdmin ? 'true' : 'false' }};
 </script>
 <style>
+   .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 100;
+        padding: 20px 0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .sidebar-sticky .nav-link {
+        color: #333;
+    }
+    .sidebar-sticky .nav-link.active {
+        background-color: #007bff;
+        color: white;
+    }
+    .table thead th {
+        background-color: #343a40;
+        color: white;
+    }
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    .btn-group button {
+        margin: 0 5px;
+        display: inline-block;
+    }
     #editCustomerModal button {
-    display: inline-block;
-    float: left;
-    margin-top: 1em;
-}
-.btn-group button {
-    margin: 0px 10px;
-    display: inline-block;
-    width: 100%;
-}
+        display: inline-block;
+        float: left;
+        margin-top: 1em;
+    }
+    .input-group-text {
+        background-color: #fff;
+        border-right: none;
+    }
+    .input-group .form-control {
+        border-left: none;
+    }
+    div#customerTable_length {
+        margin-bottom: 20px;
+    }
 </style>
 @endsection

@@ -131,6 +131,7 @@ class LeadsController extends Controller
         ]);
     }
 
+    
     public function viewfulldetails($id)
     {
         $lead = Lead::findOrFail($id);
@@ -301,17 +302,40 @@ class LeadsController extends Controller
         return response()->json(['message' => 'Lead deleted successfully']);
     }
 
-    /**
-     * Function saveLeadHistory
-     *  used for save history of lead update status and comment
-     * @author Raj <rahulsisodia82@gmail.com>
-     * @param  array $inputs
-     *  array inputs
-     * @param string $addedBy
-     *  login user name     
-     * @return bool
-     */
+    // New create method
+    public function create()
+    {
+        return view('leads.create');
+    }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'full_name' => 'required|string|max:500',
+            'email' => 'required|email|max:100|unique:leads,email',
+            'country_code' => 'nullable|string|max:10',
+            'contact_no' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'pincode' => 'nullable|string|max:100',
+            'service_name' => 'nullable|string|max:500',
+            'service_type' => 'nullable|string|max:255',
+            'industry' => 'nullable|string|max:255',
+            'number_of_users' => 'nullable|string|max:500',
+            'source' => 'nullable|in:Google,Facebook,CSV,Manual',
+            'status' => 'nullable|in:0,1,2',
+            'message' => 'nullable|string',
+            'comment' => 'nullable|string',
+            'description' => 'nullable|string',
+            'customer_description' => 'nullable|string',
+            'lead_id' => 'nullable|string|max:255',
+            'campaign_id' => 'nullable|integer',
+            'form_id' => 'nullable|integer',
+        ]);
+
+        Lead::create($request->all());
+
+        return redirect()->route('leads.index')->with('success', 'Lead added successfully!');
+    }
     public function saveLeadHistory ($inputs, $addedBy) {
         $leadshistory = LeadHistory::create([
             'status' => $inputs['status'],

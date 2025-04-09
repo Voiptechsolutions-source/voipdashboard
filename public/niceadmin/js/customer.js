@@ -52,10 +52,17 @@ $(document).ready(function() {
         paging: true,
         lengthMenu: [100, 200, 300, 400],
         pageLength: 100,
-        dom: 'lBfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ],
+        // dom: 'B<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        // buttons: [
+        //     //'copy', 'csv', 'excel', 'pdf', 'print',
+        //     {
+        //         text: 'Add Lead',
+        //         className: 'btn btn-success',
+        //         action: function() {
+        //             window.location.href = '/leads/create';
+        //         }
+        //     }
+        // ],
         language: {
             emptyTable: "No data available in table",
             processing: "<span class='spinner-border spinner-border-sm'></span> Loading..."

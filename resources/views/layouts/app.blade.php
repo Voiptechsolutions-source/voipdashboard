@@ -13,11 +13,15 @@
     <link rel="stylesheet" href="{{ asset('niceadmin/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('niceadmin/vendor/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    
+
 
     <!-- jQuery & DataTables -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
 </head>
 <body>
 
@@ -37,6 +41,7 @@
         var leadsIndexUrl = "{{ route('leads.index') }}"; // Pass the correct route
     </script>
     <script src="{{ asset('niceadmin/js/customer.js') }}"></script>  
+
 
     @yield('scripts') <!-- ✅ This allows scripts to be added from child views -->
 

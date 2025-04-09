@@ -15,6 +15,10 @@
     <div class="table-responsive">
     <div class="container my-3">
     <div class="row g-2 align-items-center">
+        <div class="d-flex justify-content-between mb-3">
+    <a href="{{ route('leads.create') }}" class="btn btn-success">Add Lead</a>
+    <div id="dt-exports"></div>
+</div>
         <!-- Search by Name -->
         <div class="col-md-3">
             <div class="input-group">
@@ -53,6 +57,7 @@
         </div>
     </div>
 </div>
+
      <table id="customerTable" class="table table-striped table-bordered">
         <thead>
             <tr>
@@ -337,7 +342,7 @@
    window.isSuperAdmin = {{ $isSuperAdmin ? 'true' : 'false' }};
 </script>
 <style>
-   .sidebar {
+   /*.sidebar {
         position: fixed;
         top: 0;
         bottom: 0;
@@ -345,7 +350,7 @@
         z-index: 100;
         padding: 20px 0;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+    }*/
     .sidebar-sticky .nav-link {
         color: #333;
     }
@@ -380,5 +385,6 @@
     div#customerTable_length {
         margin-bottom: 20px;
     }
+
 </style>
 @endsection

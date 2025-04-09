@@ -15,6 +15,9 @@ Route::post('/login', [AuthController::class, 'login'])->name('logins');
 Route::get('/no-access', function () {
     return view('errors.no-access');
 })->name('no-access');
+Route::get('/leads/create', [LeadsController::class, 'create'])->name('leads.create');
+Route::post('/leads', [LeadsController::class, 'store'])->name('leads.store');
+
 
 
 Route::middleware(['auth:web'])->group(function () {
@@ -42,6 +45,9 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/leadstatus/{lead}', [LeadsController::class, 'show'])->middleware('permission:leads')->name('leads.show');
 
     Route::get('/leads-history/{id}', [LeadsHistoryController::class, 'index'])->middleware('permission:leads')->name('leadshistory.index');
+
+    
+    
     Route::get('/import-customers', [LeadImportController::class, 'showImportForm'])->middleware('permission:import-customers')->name('import.customers.form');
 
     Route::post('/update-status/{lead}', [LeadsController::class, 'updateStatus'])->middleware('permission:leads')->name('leads.update.status');

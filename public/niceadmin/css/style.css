@@ -350,12 +350,12 @@ h6 {
 
 @media (min-width: 1200px) {
   .logo {
-    width: 280px;
+    width: 240px;
   }
 }
 
 .logo img {
-  max-height: 26px;
+  max-height: 38px;
   margin-right: 6px;
 }
 
@@ -595,7 +595,7 @@ h6 {
   width: 300px;
   z-index: 996;
   transition: all 0.3s;
-  padding: 20px;
+  padding: 20px 0;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #aab7cf transparent;
@@ -674,17 +674,21 @@ h6 {
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: #4154f1;
+  color: #000;
   transition: 0.3;
-  background: #f6f9ff;
+  background: transparent;
   padding: 10px 15px;
-  border-radius: 4px;
+  border-radius: 0px;
 }
 
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #4154f1;
+  color: #000;
+}
+.nav-item.active .nav-link, .nav-item.active .nav-link i {
+	background: #e5462c;
+	color: #fff;
 }
 
 .sidebar-nav .nav-link.collapsed {
@@ -697,12 +701,12 @@ h6 {
 }
 
 .sidebar-nav .nav-link:hover {
-  color: #4154f1;
-  background: #f6f9ff;
+  color: #fff;
+  background: #e5462c;
 }
 
 .sidebar-nav .nav-link:hover i {
-  color: #4154f1;
+  color: #fff;
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
@@ -751,6 +755,19 @@ h6 {
 # Dashboard
 --------------------------------------------------------------*/
 /* Filter dropdown */
+.card.info-card.sales-card {
+	background: #e5462c;
+	color: #fff;
+}
+.card.info-card.customers-card {
+	background: #19212e;
+}
+.sales-card .card-title, .card.info-card.revenue-card .card-title, .card.info-card.customers-card .card-title {
+  color: #fff;
+}
+.sales-card .card-title span, .card.info-card.revenue-card .card-title span, .card.info-card.customers-card .card-title span {
+  color: #f7f7f7;
+}
 .dashboard .filter {
   position: absolute;
   right: 0px;
@@ -758,7 +775,7 @@ h6 {
 }
 
 .dashboard .filter .icon {
-  color: #aab7cf;
+  color: #fff;
   padding-right: 20px;
   padding-bottom: 5px;
   transition: 0.3s;
@@ -767,7 +784,7 @@ h6 {
 
 .dashboard .filter .icon:hover,
 .dashboard .filter .icon:focus {
-  color: #4154f1;
+  color: #f5f5f5;
 }
 
 .dashboard .filter .dropdown-header {
@@ -795,7 +812,7 @@ h6 {
 
 .dashboard .info-card h6 {
   font-size: 28px;
-  color: #012970;
+  color: #fff;
   font-weight: 700;
   margin: 0;
   padding: 0;
@@ -811,20 +828,47 @@ h6 {
 }
 
 .dashboard .sales-card .card-icon {
-  color: #4154f1;
+  color: #e5462c;
   background: #f6f6fe;
 }
-
+.card.info-card.revenue-card {
+	background: #2eca6a;
+}
 .dashboard .revenue-card .card-icon {
   color: #2eca6a;
   background: #e0f8e9;
 }
 
 .dashboard .customers-card .card-icon {
-  color: #ff771d;
-  background: #ffecdf;
+	color: #19212e;
+	background: #fff;
 }
-
+.btn-primary {
+	background: #e5462c;
+	border-color: #e5462c;
+}
+.btn-primary:hover {
+	background: #aa3421;
+	border-color: #aa3421;
+}
+.btn-success {
+	background: #19212e;
+	border-color: #19212e;
+}
+.btn-success:hover {
+	background: #303e56;
+	border-color: #303e56;
+}
+.btn-info {
+	background: #2eca6a;
+	border-color: #2eca6a;
+	color: #fff;
+}
+.btn-info:hover {
+	background: #249e53;
+	border-color: #249e53;
+	color: #fff;
+}
 /* Activity */
 .dashboard .activity {
   font-size: 14px;

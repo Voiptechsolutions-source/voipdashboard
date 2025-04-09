@@ -16,7 +16,7 @@
     <div class="container my-3">
     <div class="row g-2 align-items-center">
         <div class="d-flex justify-content-between mb-3">
-    <a href="{{ route('leads.create') }}" class="btn btn-success">Add Lead</a>
+    <a href="{{ route('leads.create') }}" class="btn btn-success">Add New Lead</a>
     <div id="dt-exports"></div>
 </div>
         <!-- Search by Name -->

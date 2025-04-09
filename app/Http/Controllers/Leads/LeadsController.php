@@ -308,32 +308,44 @@ class LeadsController extends Controller
         return view('leads.create');
     }
 
+    // save manual lead data
     public function store(Request $request)
     {
+        \Log::info('Store request received', $request->all());
+
         $request->validate([
             'full_name' => 'required|string|max:500',
             'email' => 'required|email|max:100|unique:leads,email',
-            'country_code' => 'nullable|string|max:10',
-            'contact_no' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
-            'pincode' => 'nullable|string|max:100',
-            'service_name' => 'nullable|string|max:500',
-            'service_type' => 'nullable|string|max:255',
-            'industry' => 'nullable|string|max:255',
-            'number_of_users' => 'nullable|string|max:500',
-            'source' => 'nullable|in:Google,Facebook,CSV,Manual',
-            'status' => 'nullable|in:0,1,2',
-            'message' => 'nullable|string',
-            'comment' => 'nullable|string',
-            'description' => 'nullable|string',
-            'customer_description' => 'nullable|string',
-            'lead_id' => 'nullable|string|max:255',
-            'campaign_id' => 'nullable|integer',
-            'form_id' => 'nullable|integer',
+            'country_code' => 'required|string|max:10',
+            'contact_no' => 'required|string|max:20',
+            'address' => 'required|string',
+            'pincode' => 'required|string|max:100',
+            'service_name' => 'required|string|max:500',
+            'service_type' => 'required|string|max:255', // Added service_type validation
+            'industry' => 'required|string|max:255',
+            'number_of_users' => 'required|string|max:500',
+            'source' => 'required|in:Google,Facebook,CSV,Manual',
+            'status' => 'required|in:0,1,2',
+            'message' => 'required|string',
+            'comment' => 'required|string',
+            'description' => 'required|string',
+            'customer_description' => 'required|string',
         ]);
 
-        Lead::create($request->all());
+        $leadData = $request->only([
+            'full_name', 'email', 'country_code', 'contact_no', 'address',
+            'pincode', 'service_name', 'service_type', 'industry', 'number_of_users',
+            'source', 'status', 'message', 'comment', 'description', 'customer_description'
+        ]);
 
+        // Map 'services' to 'service_name'
+        if ($request->has('services')) {
+            $leadData['service_name'] = $request->input('services');
+        }
+
+        $lead = Lead::create($leadData);
+
+        \Log::info('Lead created successfully with ID: ' . $lead->id);
         return redirect()->route('leads.index')->with('success', 'Lead added successfully!');
     }
     public function saveLeadHistory ($inputs, $addedBy) {

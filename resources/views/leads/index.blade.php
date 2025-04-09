@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+
+
 <div class="container">
     <div class="pagetitle">
-        <h1>Customers List</h1>
+        <h1>{{ $isSuperAdmin ? 'Leads' : 'My Assigned Leads' }}</h1>
     </div>
     <section class="section">
     <div class="row">
@@ -65,9 +67,10 @@
                 <th>Source</th>
                 <th>Service</th>
                 <th>Service Type</th>
-                <th>View</th>  <!-- New Column -->
-                <th>Edit</th>  
-                <th>Delete</th>
+                <th>Assigned to</th>
+                <th>Assigned Username</th>
+                
+                <th>Actions</th> <!-- Single Actions column -->
             </tr>
         </thead>
     </table>
@@ -82,12 +85,15 @@
       <div class="modal-body">
         <p><strong>Full Name:</strong> <span id="detailFullName"></span></p>
         <p><strong>Email:</strong> <span id="detailEmail"></span></p>
+        <p><strong>Country Code:</strong> <span id="detailcountrycode"></span></p>
         <p><strong>Contact No:</strong> <span id="detailContact"></span></p>
         <p><strong>Address:</strong> <span id="detailAddress"></span></p>
+        <p><strong>PinCode:</strong> <span id="detailpincode"></span></p>
         <p><strong>Message:</strong> <span id="detailMessage"></span></p>
-        <p><strong>Description:</strong> <span id="detailDescription"></span></p>
+        <p><strong>Status Description:</strong> <span id="detailDescription"></span></p>
         <p><strong>Service Name:</strong> <span id="detailService"></span></p>
         <p><strong>Service Type:</strong> <span id="detailServicetype"></span></p>
+        <p><strong>Industry:</strong> <span id="detailindustry"></span></p>
         <p><strong>Number of Users:</strong> <span id="detailUsers"></span></p>
         <p><strong>Comment:</strong> <span id="detailComment"></span></p>
         <p><strong>Customer Description:</strong> <span id="detailCustomerDesc"></span></p>
@@ -108,7 +114,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="statusModalLabel">Update Status</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form id="updateStatusForm">
@@ -116,13 +122,14 @@
           
           <!-- Label to display the ID -->
           <div class="mb-3">
-            <label for="data" class="form-label">Row ID</label>
+            <label for="data" class="form-label">Lead ID</label>
             <label id="data" class="form-control"></label>
           </div>
           
           <!-- Description in read-only text area -->
           <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
+            <input type="hidden" id="statusHidden" name="status"> <!-- Hidden field for status -->
+            <label for="description" class="form-label">Status Description</label>
             <textarea class="form-control" id="description" name="description" rows="3"></textarea>
           </div>
 
@@ -151,7 +158,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Customer</h5>
-                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="editCustomerForm">
@@ -183,7 +190,20 @@
                                 <label>Pincode</label>
                                 <input type="text" class="form-control" id="editPincode" name="pincode">
                             </div>
+                            <div class="form-group">
+                                <label>Status Description</label>
+                                <textarea class="form-control" id="editstatusdesc" name="description"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Customer Description</label>
+                                <textarea class="form-control" id="editcustomerdesc" name="customer_description"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Comment</label>
+                                <textarea class="form-control" id="editComment" name="comment"></textarea>
+                            </div>
                         </div>
+
 
                         <div class="col-md-6">
                             <div class="form-group">
@@ -194,6 +214,10 @@
                                 <label>Service Type</label>
                                 <input type="text" class="form-control" id="editServiceType" name="service_type">
                             </div>
+                             <div class="form-group">
+                                <label>Industry</label>
+                                <input type="text" class="form-control" id="editindustry" name="industry">
+                            </div>
                             <div class="form-group">
                                 <label>Number of Users</label>
                                 <input type="text" class="form-control" id="editNumberOfUsers" name="number_of_users">
@@ -201,6 +225,19 @@
                             <div class="form-group">
                                 <label>Message</label>
                                 <textarea class="form-control" id="editMessage" name="message"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Source</label>
+                               <input type="text" class="form-control" id="editsource" name="source">
+                            </div>
+                            <div class="form-group">
+                                <label>campaign Id</label>
+                               <input type="text" class="form-control" id="editcampaign" name="campaign_id">
+                            </div>
+                            <div class="form-group">
+                                <label>Form Id</label>
+                               <input type="text" class="form-control" id="editformid" name="form_id">
                             </div>
                             <div class="form-group">
                                 <label>Status</label>
@@ -210,19 +247,49 @@
                                     <option value="2">New Lead</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label>Comment</label>
-                                <textarea class="form-control" id="editComment" name="comment"></textarea>
-                            </div>
-                        </div>
-                    </div>
+                            
 
+                        </div>
+
+                    </div>
+                    
                     <button type="submit" class="btn btn-success">Update Customer</button>
+                    
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<!----assign modal--->
+
+<div class="modal fade" id="assignLeadModal" tabindex="-1" aria-labelledby="assignLeadModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="assignLeadModalLabel">Assign Lead</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="assignLeadForm">
+                            <input type="hidden" id="assignLeadId" name="lead_id">
+                            <div class="mb-3">
+                                <label for="assignUser" class="form-label">Assign to User</label>
+                                <select class="form-select" id="assignUser" name="user_id" required>
+                                    <option value="">Select a User</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Assign</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+    </div>
 
 </div>
 </div>
@@ -231,5 +298,24 @@
 </div>
     </section>
 </div>
-
+<!-- Pass permissions to JavaScript -->
+<script>
+   
+    window.canView = {{ $canView ? 'true' : 'false' }};
+    window.canEdit = {{ $canEdit ? 'true' : 'false' }};
+    window.canDelete = {{ $canDelete ? 'true' : 'false' }};
+   window.isSuperAdmin = {{ $isSuperAdmin ? 'true' : 'false' }};
+</script>
+<style>
+    #editCustomerModal button {
+    display: inline-block;
+    float: left;
+    margin-top: 1em;
+}
+.btn-group button {
+    margin: 0px 10px;
+    display: inline-block;
+    width: 100%;
+}
+</style>
 @endsection

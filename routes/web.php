@@ -28,8 +28,17 @@ Route::middleware(['auth:web'])->group(function () {
         // Existing index route
     Route::get('/leads', [LeadsController::class, 'index'])->middleware('permission:leads')->name('leads.index');
 
+    //assign to routes
+    
+    Route::get('/users/sales-admins', [LeadsController::class, 'getSalesAdmins'])->name('users.sales-admins');
+
+    Route::post('/leads/assign', [LeadsController::class, 'assign'])->name('leads.assign');
+
     // New show route for fetching a single lead
-    Route::get('/leads/{lead}', [LeadsController::class, 'show'])->middleware('permission:leads')->name('leads.show');
+
+    Route::get('/leads/{lead}', [LeadsController::class, 'viewfulldetails'])->middleware('permission:leads')->name('leads.viewfulldetails');
+
+    Route::get('/leadstatus/{lead}', [LeadsController::class, 'show'])->middleware('permission:leads')->name('leads.show');
 
     Route::get('/import-customers', [LeadImportController::class, 'showImportForm'])->middleware('permission:import-customers')->name('import.customers.form');
 
@@ -65,4 +74,7 @@ Route::middleware(['auth:web'])->group(function () {
         Route::post('/update/{user}', [UsersController::class, 'update'])->middleware('permission:users')->name('users.update');
         Route::delete('/delete/{user}', [UsersController::class, 'destroy'])->middleware('permission:users')->name('users.destroy');
     });
+
+    Route::get('/profile/edit', [UsersController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile', [UsersController::class, 'updateProfile'])->name('profile.update');
 });

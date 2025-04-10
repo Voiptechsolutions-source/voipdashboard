@@ -95,6 +95,16 @@
               <label>Email:</label>
               <input type="email" id="editEmail" class="form-control" required>
             </div>
+
+            <div class="mb-3">
+              <label for="password">New Password (Leave blank to keep current):</label>
+              <input type="password" name="password" id="password" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="password_confirmation">Confirm New Password:</label>
+                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
+            </div>
             <div class="mb-3">
               <label>Role:</label>
               <select id="editRole" class="form-control"></select>
@@ -173,6 +183,8 @@
         let formData = {
           name: $('#editName').val(),
           email: $('#editEmail').val(),
+          password: $('#password').val(),
+          password_confirmation: $('#password_confirmation').val(),
           role_id: $('#editRole').val()
         };
         $.post('/users/update/' + userId, formData, function (response) {

@@ -16,7 +16,9 @@
     <div class="container my-3">
     <div class="row g-2 align-items-center">
         <div class="d-flex justify-content-between mb-3">
-    <a href="{{ route('leads.create') }}" class="btn btn-success">Add New Lead</a>
+        @if($isSuperAdmin)
+            <a href="{{ route('leads.create') }}" class="btn btn-success">Add New Lead</a>
+        @endif
     <div id="dt-exports"></div>
 </div>
         <!-- Search by Name -->

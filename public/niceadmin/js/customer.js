@@ -37,9 +37,9 @@ $(document).ready(function() {
                     }
                     if (window.isSuperAdmin) {
                         if (row.assigned_to) {
-                            actions += '<button class="btn btn-secondary btn-sm assign-lead" data-id="' + row.id + '">Assign to (' + (row.assigned_username || 'Unknown') + ')</button>';
+                            actions += '<button class="btn btn-secondary btn-sm assign-lead" data-id="' + row.id + '" data-assigned-to="' + row.assigned_to + '">Assign to (' + (row.assigned_username || 'Unknown') + ')</button>';
                         } else {
-                            actions += '<button class="btn btn-primary btn-sm assign-lead" data-id="' + row.id + '">Assign</button>';
+                            actions += '<button class="btn btn-primary btn-sm assign-lead" data-id="' + row.id + '" data-assigned-to="0">Assign</button>';
                         }
                     }
                     actions += '</div>';
@@ -72,17 +72,17 @@ $(document).ready(function() {
 
     // Search by Name (Column Index 2)
     $('#nameSearch').on('keyup', function () {
-        table.column(2).search(this.value).draw();
+        table.column(3).search(this.value).draw();
     });
 
     // Search by Email (Column Index 5)
     $('#emailSearch').on('keyup', function () {
-        table.column(5).search(this.value).draw();
+        table.column(4).search(this.value).draw();
     });
 
     // Search by Phone Number (Column Index 4)
     $('#phoneSearch').on('keyup', function () {
-        table.column(4).search(this.value).draw();
+        table.column(6).search(this.value).draw();
     });
 
     // 🔥 Fix for Status Filtering (Column Index 7)
@@ -139,7 +139,9 @@ $(document).ready(function() {
 
     // Assign Lead Button Click
     $(document).on('click', '.assign-lead:not(.disabled)', function() {
+        
         var leadId = $(this).data('id');
+        var assignedTo = $(this).data('assigned-to');
         $('#assignLeadId').val(leadId);
 
         $.ajax({
@@ -148,9 +150,13 @@ $(document).ready(function() {
             success: function(response) {
                 var select = $('#assignUser');
                 select.empty().append('<option value="">Select a User</option>');
+                console.log("Assigned To:", assignedTo); // Debug assigned_to
+                console.log("Users:", response.users); // Debug user list
                 response.users.forEach(function(user) {
-                    select.append('<option value="' + user.id + '">' + user.username + ' (' + user.role_name + ')</option>');
+                    var selected = (parseInt(user.id) === parseInt(assignedTo)) ? 'selected' : '';
+                    select.append('<option value="' + user.id + '" ' + selected + '>' + user.username + ' (' + user.role_name + ')</option>');
                 });
+                $('#assignLeadModalLabel').text(assignedTo ? 'Reassign Lead' : 'Assign Lead');
                 $('#assignLeadModal').modal('show');
             },
             error: function() {

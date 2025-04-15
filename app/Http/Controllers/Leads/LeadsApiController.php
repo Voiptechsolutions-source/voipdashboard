@@ -62,8 +62,8 @@ class LeadsApiController extends Controller
         if ($existingLead) {
             return response()->json([
                 'error' => 'Email already exists',
-                'message' => 'The email address ' . $request->email . ' is already registered as a lead.'
-            ], 409); // 409 Conflict for duplicate resource
+                'message' => 'Email Address ' . $request->email . ' is already Exist'
+            ], 409);// 409 Conflict for duplicate resource
         }
 
         // Step 3: Store customer lead

@@ -9,6 +9,7 @@ use App\Http\Controllers\Customers\SupportController;
 use App\Http\Controllers\Roles\RoleController;
 #use App\Http\Controllers\Roles\RoleController;
 use App\Http\Controllers\Users\UsersController;
+use App\Http\Controllers\Email\EmailTemplateController;
 
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('logins');
@@ -18,7 +19,7 @@ Route::get('/no-access', function () {
 Route::get('/leads/create', [LeadsController::class, 'create'])->name('leads.create');
 Route::post('/leads', [LeadsController::class, 'store'])->name('leads.store');
 
-
+Route::get('/test-email', [UsersController::class, 'testEmail']);
 
 Route::middleware(['auth:web'])->group(function () {
 
@@ -85,4 +86,17 @@ Route::middleware(['auth:web'])->group(function () {
 
     Route::get('/profile/edit', [UsersController::class, 'editProfile'])->name('profile.edit');
     Route::put('/profile', [UsersController::class, 'updateProfile'])->name('profile.update');
+
+    Route::get('/email-templates', [EmailTemplateController::class, 'index'])->name('email-templates.index');
+    Route::get('/email-templates/create', [EmailTemplateController::class, 'create'])->name('email-templates.create');
+    Route::post('/email-templates/save', [EmailTemplateController::class, 'store'])->name('email-templates.store');
+    Route::get('/email-templates/{emailTemplate}/edit', [EmailTemplateController::class, 'edit'])->name('email-templates.edit');
+    Route::put('/email-templates/{emailTemplate}', [EmailTemplateController::class, 'update'])->name('email-templates.update');
+    Route::delete('/email-templates/{emailTemplate}', [EmailTemplateController::class, 'destroy'])->name('email-templates.destroy');
+
+    Route::resource('email-templates', EmailTemplateController::class);
+    Route::get('send-email', [EmailTemplateController::class, 'showSendEmailForm'])->name('send-email.form');
+    Route::post('send-email', [EmailTemplateController::class, 'sendEmail'])->name('send-email');
+    Route::get('schedule-reminder', [EmailTemplateController::class, 'showScheduleReminderForm'])->name('schedule-reminder.form');
+    Route::post('schedule-reminder', [EmailTemplateController::class, 'scheduleReminder'])->name('schedule-reminder');
 });

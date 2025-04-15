@@ -24,6 +24,13 @@ class UsersController extends Controller
         return view('users.create');
     }
 
+    public function testEmail()
+    {
+        $emailService = new \App\Services\EmailService();
+        $emailService->testEmail('suthar05october@gmail.com', 'Welcome Email', []); // Match the exact name
+        return redirect()->back()->with('success', 'Test email sent');
+    }
+
     public function store(Request $request)
     {
         $request->validate([

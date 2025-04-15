@@ -57,7 +57,16 @@ class LeadsApiController extends Controller
             ], 422);
         }
 
-        // Store customer lead
+        // Step 2: Check if email already exists
+        $existingLead = Lead::where('email', $request->email)->first();
+        if ($existingLead) {
+            return response()->json([
+                'error' => 'Email already exists',
+                'message' => 'The email address ' . $request->email . ' is already Exist'
+            ], 409); // 409 Conflict for duplicate resource
+        }
+
+        // Step 3: Store customer lead
         try {
             $customer = Lead::create([
                 'full_name' => $request->full_name,

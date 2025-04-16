@@ -78,6 +78,34 @@
           </a>
         </li>
       @endif
+
+      {{-- Email Template--}}
+      
+        <li class="nav-item {{ request()->is('email-templates*') ? 'active' : '' }}">
+          <a class="nav-link" href="{{ route('email-templates.index') }}">
+            <i class="bi bi-person-circle"></i>
+            <span>Email Template</span>
+          </a>
+        </li>
+
+        {{-- Send Email Template--}}
+      
+        <li class="nav-item {{ request()->is('send-email*') ? 'active' : '' }}">
+          <a class="nav-link" href="{{ route('send-email.form') }}">
+            <i class="bi bi-person-circle"></i>
+            <span>Send Email</span>
+          </a>
+        </li>
+
+        <!-- {{-- schedule-reminder Template--}}
+      
+        <li class="nav-item {{ request()->is('schedule-reminder*') ? 'active' : '' }}">
+          <a class="nav-link" href="{{ route('schedule-reminder.form') }}">
+            <i class="bi bi-person-circle"></i>
+            <span>Schedule Reminder</span>
+          </a>
+        </li> -->
+      
     @endauth
   </ul>
 </aside><!-- End Sidebar -->

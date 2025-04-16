@@ -97,14 +97,14 @@
           </a>
         </li>
 
-        {{-- schedule-reminder Template--}}
+        <!-- {{-- schedule-reminder Template--}}
       
         <li class="nav-item {{ request()->is('schedule-reminder*') ? 'active' : '' }}">
           <a class="nav-link" href="{{ route('schedule-reminder.form') }}">
             <i class="bi bi-person-circle"></i>
             <span>Schedule Reminder</span>
           </a>
-        </li>
+        </li> -->
       
     @endauth
   </ul>

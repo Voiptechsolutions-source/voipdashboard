@@ -44,6 +44,7 @@ class EmailTemplateController extends Controller
     public function edit(EmailTemplate $emailTemplate)
     {
         $placeholders = config('email.placeholders');
+        Log::debug('Template body from database:', ['body' => $emailTemplate->body]);
         return view('email-templates.edit', compact('emailTemplate', 'placeholders'));
     }
 

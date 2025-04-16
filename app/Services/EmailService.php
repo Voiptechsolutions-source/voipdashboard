@@ -24,8 +24,8 @@ class EmailService
         $subject = $this->replacePlaceholders($template->subject, $data);
         $body = $this->replacePlaceholders($template->body, $data);
 
-        Mail::html($body, function ($message) use ($to, $subject) {
-            $message->to($to)->subject($subject)->from($this->fromEmail, $this->fromName);
+        Mail::send([], [], function ($message) use ($to, $subject, $body) {
+            $message->to($to)->subject($subject)->from($this->fromEmail, $this->fromName)->setBody($body, 'text/html');
         });
 
         Log::info("Email sent to {$to} with subject: {$subject} (Attempted delivery)");
@@ -113,19 +113,25 @@ class EmailService
 
     private function replacePlaceholders($text, $data)
     {
-        $placeholders = config('email.placeholders');
-        $result = $text;
+        Log::debug('Input text for replacement: ', ['text' => $text]);
+        Log::debug('Available data for replacement: ', $data);
 
-        foreach ($placeholders as $placeholder => $description) {
-            $value = $data[str_replace(['{', '}'], '', $placeholder)] ?? $placeholder;
-            if (isset($data[str_replace(['{', '}'], '', $placeholder)])) {
-                $value = $data[str_replace(['{', '}'], '', $placeholder)];
-            } elseif ($placeholder === '{date}') {
+        $result = $text;
+        // Extract all placeholders from the text (e.g., {first_name}, {email})
+        preg_match_all('/{([^}]+)}/', $text, $matches);
+        $placeholders = $matches[1] ?? [];
+
+        foreach ($placeholders as $placeholder) {
+            $fullPlaceholder = '{' . $placeholder . '}';
+            $value = $data[$placeholder] ?? $fullPlaceholder; // Use data value or keep placeholder if missing
+            if ($placeholder === 'date') {
                 $value = now()->format('Y-m-d');
             }
-            $result = str_replace($placeholder, $value, $result);
+            $result = str_replace($fullPlaceholder, $value, $result);
+            Log::debug('Replaced ' . $fullPlaceholder . ' with ' . $value);
         }
 
+        Log::debug('Final replaced text: ', ['text' => $result]);
         return $result;
     }
 }

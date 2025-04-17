@@ -8,7 +8,7 @@ use Log;
 
 class EmailService
 {
-    protected $fromEmail = 'suthar05october@gmail.com';
+    protected $fromEmail = 'test@voiptechsolution.com';
     protected $fromName = 'Admin';
     protected $batchSize = 20; // Default batch size
     protected $sleepDuration = 1200; // Default 20 minutes in seconds

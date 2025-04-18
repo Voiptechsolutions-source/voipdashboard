@@ -40,7 +40,7 @@
             </div> -->
 
             <div class="mb-3 form-check">
-                <input type="checkbox" name="is_active" id="is_active" class="form-check-input" {{ $template->is_active ? 'checked' : '' }} value="1">
+                <input type="checkbox" name="is_active" id="is_active" class="form-check-input" {{ old('is_active', true) ? 'checked' : '' }} value="1">
                 <label class="form-check-label" for="is_active">Is Active <small class="text-muted">(Must be true or false)</small></label>
             </div>
 

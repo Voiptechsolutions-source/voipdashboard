@@ -8,7 +8,7 @@ use Log;
 
 class EmailService
 {
-    protected $fromEmail = 'test@voiptechsolution.com';
+    protected $fromEmail = 'suthar05october@gmail.com';
     protected $fromName = 'Admin';
     protected $batchSize = 20; // Default batch size
     protected $sleepDuration = 1200; // Default 20 minutes in seconds
@@ -38,11 +38,36 @@ class EmailService
         $totalRecipients = count($recipients);
         $batches = ceil($totalRecipients / $batchSize);
 
-        $template = EmailTemplate::where('name', $templateName)->where('is_active', true)->first();
+        Log::info("sendBatchEmails called with templateName: " . ($templateName ? "'{$templateName}'" : 'null') . ", recipients count: {$totalRecipients}");
+        Log::info("Custom data: ", $data);
 
-        if (!$template) {
-            Log::warning("Template not found or inactive for name: {$templateName}");
-            throw new \Exception('Template not found or inactive');
+        $template = null;
+        $subject = '';
+        $body = '';
+
+        if ($templateName) {
+            Log::info("Attempting to find template with name: {$templateName}");
+            $template = EmailTemplate::whereRaw('LOWER(name) = ?', [strtolower(trim($templateName))])
+                                    ->where('is_active', true)
+                                    ->first();
+            Log::info("Template query result for name '{$templateName}' (case-insensitive, trimmed): ", ['template' => $template ? $template->toArray() : null]);
+
+            if (!$template) {
+                Log::warning("Template not found or inactive for name: '{$templateName}'. Active templates with this name count: " . EmailTemplate::whereRaw('LOWER(name) = ?', [strtolower(trim($templateName))])->where('is_active', true)->count());
+                throw new \Exception('Template not found or inactive');
+            }
+
+            $subject = $template->subject;
+            $body = $template->body;
+        } else {
+            Log::info("Using custom data for email composition");
+            $subject = $data['custom_subject'] ?? '';
+            $body = $data['custom_body'] ?? '';
+        }
+
+        if (!$subject || !$body) {
+            Log::warning("Subject or body is empty. Subject: '{$subject}', Body length: " . strlen($body));
+            throw new \Exception('Subject and body are required');
         }
 
         for ($batch = 0; $batch < $batches; $batch++) {
@@ -60,15 +85,15 @@ class EmailService
                     'unsubscribe_link' => 'https://example.com/unsubscribe'
                 ]);
 
-                $subject = $this->replacePlaceholders($template->subject, $recipientData);
-                $body = $this->replacePlaceholders($template->body, $recipientData);
+                $finalSubject = $this->replacePlaceholders($subject, $recipientData);
+                $finalBody = $this->replacePlaceholders($body, $recipientData);
 
                 Log::debug('Mail config: ' . json_encode(config('mail')));
                 try {
-                    Mail::html($body, function ($message) use ($email, $subject) {
-                        $message->to($email)->subject($subject)->from($this->fromEmail, $this->fromName);
+                    Mail::html($finalBody, function ($message) use ($email, $finalSubject) {
+                        $message->to($email)->subject($finalSubject)->from($this->fromEmail, $this->fromName);
                     });
-                    Log::info("Email sent to {$email} with subject: {$subject} (Attempted delivery)");
+                    Log::info("Email sent to {$email} with subject: {$finalSubject} (Attempted delivery)");
                 } catch (\Exception $e) {
                     Log::error("Failed to send email to {$email}: " . $e->getMessage());
                 }

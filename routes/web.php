@@ -94,9 +94,26 @@ Route::middleware(['auth:web'])->group(function () {
     Route::put('/email-templates/{emailTemplate}', [EmailTemplateController::class, 'update'])->name('email-templates.update');
     Route::delete('/email-templates/{emailTemplate}', [EmailTemplateController::class, 'destroy'])->name('email-templates.destroy');
 
-    Route::resource('email-templates', EmailTemplateController::class);
-    Route::get('send-email', [EmailTemplateController::class, 'showSendEmailForm'])->name('send-email.form');
-    Route::post('send-email', [EmailTemplateController::class, 'sendEmail'])->name('send-email');
-    Route::get('schedule-reminder', [EmailTemplateController::class, 'showScheduleReminderForm'])->name('schedule-reminder.form');
-    Route::post('schedule-reminder', [EmailTemplateController::class, 'scheduleReminder'])->name('schedule-reminder');
+    Route::get('/', function () {
+    return redirect('/send-email'); // Redirect root to the email form
+});
+
+Route::get('/', function () {
+    return redirect('/send-email');
+});
+
+Route::get('/send-email', [EmailTemplateController::class, 'showSendEmailForm'])->name('send-email');
+Route::post('/send-email', [EmailTemplateController::class, 'sendEmail'])->name('send-email.post');
+Route::post('/store-group', [EmailTemplateController::class, 'storeGroup'])->name('store-group');
+Route::patch('/update-group/{group}', [EmailTemplateController::class, 'updateGroup'])->name('update-group');
+Route::delete('/delete-group/{group}', [EmailTemplateController::class, 'deleteGroup'])->name('delete-group');
+Route::get('/sent-emails', [EmailTemplateController::class, 'showSentEmails'])->name('sent-emails');
+Route::get('/get-template/{id}', [EmailTemplateController::class, 'getTemplate'])->name('get.template');
+Route::get('/email-templates', [EmailTemplateController::class, 'index'])->name('email-templates.index');
+Route::get('/email-templates/create', [EmailTemplateController::class, 'create'])->name('email-templates.create');
+Route::post('/email-templates', [EmailTemplateController::class, 'store'])->name('email-templates.store');
+Route::post('/email-templates', [EmailTemplateController::class, 'store'])->name('email-templates.update');
+Route::get('/email-templates/{template}/edit', [EmailTemplateController::class, 'edit'])->name('email-templates.edit');
+Route::put('/email-templates/{template}', [EmailTemplateController::class, 'update'])->name('email-templates.update');
+Route::delete('/email-templates/{template}', [EmailTemplateController::class, 'destroy'])->name('email-templates.destroy');
 });

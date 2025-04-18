@@ -9,7 +9,7 @@
             <div class="alert alert-danger">
                 <ul>
                     @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
+                    <li>{{ $error }}</li>
                     @endforeach
                 </ul>
             </div>
@@ -32,18 +32,17 @@
                 <input type="hidden" name="body" id="hiddenBody" value="{{ old('body') }}">
                 <textarea id="body" class="form-control" rows="10"></textarea>
                 <small class="text-muted">Use placeholders like {username}, {email}, {date}</small>
-                
-            </div>
-
-            <div class="mb-3 form-check">
-                <input type="checkbox" name="is_active" id="is_active" class="form-check-input" {{ old('is_active', true) ? 'checked' : '' }}>
-                <label class="form-check-label" for="is_active">Is Active</label>
             </div>
 
             <!-- <div class="mb-3 form-check">
-                <input type="checkbox" name="send_after_2_hours" id="send_after_2_hours" class="form-check-input">
-                <label class="form-check-label" for="send_after_2_hours">Send After 2 Hours</label>
+                <input type="checkbox" name="is_active" id="is_active" class="form-check-input" {{ old('is_active', true) ? 'checked' : '' }} value="1">
+                <label class="form-check-label" for="is_active">Is Active</label>
             </div> -->
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" name="is_active" id="is_active" class="form-check-input" {{ $template->is_active ? 'checked' : '' }} value="1">
+                <label class="form-check-label" for="is_active">Is Active <small class="text-muted">(Must be true or false)</small></label>
+            </div>
 
             <button type="submit" class="btn btn-primary">Create Template</button>
         </form>
@@ -85,9 +84,9 @@
                     }
                 });
 
-                document.getElementById('insertPlaceholder').addEventListener('click', function () {
+                document.getElementById('insertPlaceholder')?.addEventListener('click', function () {
                     var select = document.getElementById('placeholderSelect');
-                    var placeholder = select.value;
+                    var placeholder = select?.value;
                     if (placeholder && tinymce.activeEditor) {
                         tinymce.activeEditor.execCommand('mceInsertContent', false, placeholder);
                         console.log('Inserted placeholder:', placeholder);

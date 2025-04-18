@@ -29,17 +29,17 @@ class EmailTemplateController extends Controller
             'name' => 'required|string|max:255|unique:email_templates,name',
             'subject' => 'required|string|max:255',
             'body' => 'required|string',
-            'is_active' => 'boolean',
+            'is_active' => 'boolean', // Optional boolean, defaults to false if unchecked
         ]);
 
         EmailTemplate::create([
             'name' => $request->name,
             'subject' => $request->subject,
             'body' => $request->body,
-            'is_active' => $request->is_active ?? true,
+            'is_active' => $request->has('is_active'), // true if checked, false if unchecked
         ]);
 
-        return redirect()->route('email-templates.index')->with('success', 'Template created successfully.');
+        return redirect()->route('email-templates.index')->with('success', 'Template created successfully');
     }
 
     public function edit($templateId = null)
@@ -60,22 +60,24 @@ class EmailTemplateController extends Controller
             Log::warning('Template not found for ID during update: ' . $templateId);
             abort(404, 'Template not found');
         }
+
         Log::info('Update method called with template:', $template->toArray());
+
         $request->validate([
             'name' => 'required|string|max:255|unique:email_templates,name,' . $template->id,
             'subject' => 'required|string|max:255',
             'body' => 'required|string',
-            'is_active' => 'boolean',
+            'is_active' => 'boolean', // Validates as boolean, optional
         ]);
 
         $template->update([
             'name' => $request->name,
             'subject' => $request->subject,
             'body' => $request->body,
-            'is_active' => $request->is_active ?? $template->is_active,
+            'is_active' => $request->has('is_active'), // true if checked, false if unchecked
         ]);
 
-        return redirect()->route('email-templates.index')->with('success', 'Template updated successfully.');
+        return redirect()->route('email-templates.index')->with('success', 'Template updated successfully');
     }
     public function destroy(EmailTemplate $template)
     {
@@ -213,10 +215,20 @@ class EmailTemplateController extends Controller
 
     public function getTemplate($id)
     {
-        $template = EmailTemplate::findOrFail($id);
+        Log::info('Fetching template with ID: ' . $id);
+
+        $template = EmailTemplate::where('id', $id)->first();
+
+        Log::info('Template found: ', $template ? $template->toArray() : 'null');
+
+        if (!$template) {
+            return response()->json(['error' => 'Template not found.'], 404);
+        }
+
         return response()->json([
             'subject' => $template->subject,
             'body' => $template->body,
+            'is_active' => $template->is_active, // Include is_active for clarity
         ]);
     }
 }

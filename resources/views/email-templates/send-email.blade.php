@@ -240,7 +240,8 @@
             });
 
             function loadTemplate() {
-                var templateId = $('#template_id_compose').val();
+                var templateId = $('#template_id').val(); // Fixed to match the Send Group Email tab's select
+                console.log('Selected template ID:', templateId); // Replace alert with console.log for better debugging
                 if (templateId) {
                     $.ajax({
                         url: '/get-template/' + templateId,
@@ -248,9 +249,14 @@
                         success: function(response) {
                             $('#custom_subject').val(response.subject);
                             tinymce.get('custom_body').setContent(response.body);
+                            if (!response.is_active) {
+                                alert('Warning: This template is inactive.');
+                            }
                         },
-                        error: function() {
-                            alert('Failed to load template.');
+                        error: function(xhr) {
+                            console.error('Failed to load template:', xhr.responseJSON?.error || 'Unknown error');
+                            $('#custom_subject').val('');
+                            tinymce.get('custom_body').setContent('');
                         }
                     });
                 } else {
@@ -259,7 +265,19 @@
                 }
             }
 
-            loadTemplate();
+            // Call loadTemplate when the template dropdown changes
+            $('#template_id').on('change', loadTemplate);
+            loadTemplate(); // Initial load
         });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const successMessage = document.getElementById('success-message');
+        if (successMessage) {
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 1000); // 1000 milliseconds = 1 second
+        }
+    });
+
     </script>
 @endsection

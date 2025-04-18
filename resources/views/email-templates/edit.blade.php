@@ -15,7 +15,7 @@
     @php
         $templateDebug = isset($template) && $template instanceof \App\Models\EmailTemplate ? "ID: {$template->id}, Name: {$template->name}" : "Not set or invalid: " . var_export($template, true);
     @endphp
-    <p>Debug: $template status - {{ $templateDebug }}</p>
+    
     @if (isset($template) && $template instanceof \App\Models\EmailTemplate)
         <form method="POST" action="{{ route('email-templates.update', ['template' => $template->id]) }}">
             @csrf
